@@ -44,6 +44,20 @@ async function load() {
   render(await res.json(), end);
 }
 
+// Sparkline of [isoDate, value] points; `up` draws bigger values higher.
+function spark(svg, points, up) {
+  svg.replaceChildren();
+  if (points.length < 2) return;
+  const vals = points.map((p) => p[1]), lo = Math.min(...vals), hi = Math.max(...vals);
+  const t0 = parse(points[0][0]), span = Math.max(1, parse(points.at(-1)[0]) - t0);
+  const y = (v) => (hi === lo ? 25 : up ? 44 - ((v - lo) / (hi - lo)) * 38 : 6 + ((v - lo) / (hi - lo)) * 38);
+  const line = document.createElementNS("http://www.w3.org/2000/svg", "polyline");
+  Object.entries({ points: points.map(([d, v]) => `${((parse(d) - t0) / span) * 196 + 2},${y(v)}`).join(" "),
+    fill: "none", stroke: "#151515", "stroke-width": 5, "stroke-linecap": "round", "stroke-linejoin": "round",
+    "vector-effect": "non-scaling-stroke" }).forEach(([k, val]) => line.setAttribute(k, val));
+  svg.append(line);
+}
+
 function render({ report: r, review, last_sync }, end) {
   const current = weekStart.getTime() === monday(today()).getTime();
   $("weekno").textContent = `Week ${isoWeek(weekStart)}`;
@@ -67,6 +81,7 @@ function render({ report: r, review, last_sync }, end) {
   const parts = [];
   parts.push(r.running.direction ? `Running ${word[r.running.direction]}` : "Not enough runs to compare");
   parts.push(r.strength.direction ? `strength ${word[r.strength.direction]}` : "not enough exercise data");
+  if (r.weight.direction) parts.push(r.weight.status === "on_track" ? "weight on target" : `weight ${word[r.weight.direction]}`);
   $("verdict-line").textContent = parts.join(" · ") + " vs the period before";
 
   // gauge
@@ -93,18 +108,17 @@ function render({ report: r, review, last_sync }, end) {
   $("pace").replaceChildren(run.current ? pace(run.current) : "–", run.current ? h("small", {}, "/km") : null);
   $("pace-line").textContent = run.change == null ? (run.points.length ? "Need 4 runs for a trend" : "No comparable runs")
     : `${Math.abs(Math.round(run.change))} s/km ${run.change < 0 ? "faster" : "slower"} over the period`;
-  const svg = $("trend");
-  svg.replaceChildren();
-  if (run.points.length >= 2) {
-    const vals = run.points.map((p) => p[1]), lo = Math.min(...vals), hi = Math.max(...vals);
-    const t0 = parse(run.points[0][0]), span = Math.max(1, parse(run.points.at(-1)[0]) - t0);
-    const pts = run.points.map(([d, p]) => `${((parse(d) - t0) / span) * 196 + 2},${hi === lo ? 25 : 6 + ((p - lo) / (hi - lo)) * 38}`);
-    const line = document.createElementNS("http://www.w3.org/2000/svg", "polyline");
-    Object.entries({ points: pts.join(" "), fill: "none", stroke: "#151515", "stroke-width": 5,
-      "stroke-linecap": "round", "stroke-linejoin": "round", "vector-effect": "non-scaling-stroke" })
-      .forEach(([k, val]) => line.setAttribute(k, val));
-    svg.append(line);
-  }
+  spark($("trend"), run.points, false);
+
+  // weight
+  const wt = r.weight, kg = (x) => x.toFixed(1);
+  const shown = wt.avg ?? wt.latest;
+  $("kg").replaceChildren(shown != null ? kg(shown) : "–", shown != null ? h("small", {}, " kg") : null);
+  const S = { closer: "moving toward target", further: "moving away from target", on_track: "on target", steady: "holding" };
+  $("kg-line").textContent = shown == null ? "No weigh-ins yet"
+    : wt.target == null ? "Set a weight goal in Garmin Connect"
+    : `${kg(Math.abs(shown - wt.target))} kg ${shown > wt.target ? "above" : "below"} ${kg(wt.target)} kg · ${S[wt.status] ?? "need more weigh-ins"}`;
+  spark($("wtrend"), wt.points, true);
 
   // strength
   const st = r.strength;

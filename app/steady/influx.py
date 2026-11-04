@@ -6,7 +6,7 @@ import urllib.request
 from datetime import datetime, timezone
 
 from . import config
-from .models import Activity, ExerciseSet, Night, Sample
+from .models import Activity, ExerciseSet, Night, Sample, WeighIn
 
 
 def query(q: str) -> list[dict]:
@@ -68,6 +68,18 @@ def nights(since: datetime, until: datetime) -> list[Night]:
         day = _t(r["time"]).astimezone(config.TZ).date()
         out[day] = Night(day, r.get("avgOvernightHrv"), r.get("restingHeartRate"), r.get("sleepTimeSeconds"))
     return sorted(out.values(), key=lambda n: n.day)
+
+
+def weigh_ins(since: datetime, until: datetime) -> list[WeighIn]:
+    rows = query(f'SELECT "weight" FROM "BodyComposition" WHERE {_range(since, until)}')
+    return [WeighIn(_t(r["time"]), r["weight"] / 1000) for r in rows if r.get("weight")]  # Garmin stores grams
+
+
+def weight_goal() -> float | None:
+    if config.TARGET_WEIGHT_KG:
+        return config.TARGET_WEIGHT_KG
+    rows = query('SELECT last("goal_kg") FROM "WeightGoal"')  # written by the patched sync, see sync/Dockerfile
+    return rows[0]["last"] if rows else None
 
 
 def _last(measurement: str, field: str) -> int | None:

@@ -39,3 +39,9 @@ class Night:
     hrv: float | None
     rhr: float | None
     sleep_s: float | None
+
+
+@dataclass(frozen=True)
+class WeighIn:
+    time: datetime
+    kg: float

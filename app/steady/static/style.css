@@ -77,6 +77,9 @@ button:focus-visible, input:focus-visible { outline: 3px solid var(--mustard); o
 
 /* week row */
 .week { background: var(--white); grid-column: span 3; }
+.weight { background: var(--pink); }
+.weight svg { width: 100%; height: 50px; margin-top: 14px; display: block; }
+.weight .cap:last-child { margin-top: 6px; }
 .week-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; }
 .pair { border: 2px solid var(--black); padding: 3px 8px; }
 .wk { list-style: none; padding: 0; margin: 16px 0 0; display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; }
@@ -99,7 +102,7 @@ button:focus-visible, input:focus-visible { outline: 3px solid var(--mustard); o
 .day.today .d { text-decoration: underline 3px var(--red); text-underline-offset: 4px; }
 
 /* claude's take */
-.take { background: var(--cream); grid-column: span 3; display: grid; grid-template-columns: auto 1fr; gap: 22px;
+.take { background: var(--cream); grid-column: span 2; display: grid; grid-template-columns: auto 1fr; gap: 22px;
   align-items: start; min-height: 0; }
 .take-h { font-size: 42px; color: var(--blue); }
 #take-text { font-size: 15px; line-height: 1.55; max-width: 68ch; }

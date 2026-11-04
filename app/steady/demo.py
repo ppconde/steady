@@ -2,7 +2,7 @@
 from dataclasses import dataclass, field
 from datetime import datetime
 
-from .models import Activity, ExerciseSet, Night, Sample
+from .models import Activity, ExerciseSet, Night, Sample, WeighIn
 
 
 @dataclass
@@ -11,6 +11,8 @@ class FakeSource:
     sets: list[ExerciseSet] = field(default_factory=list)
     night_list: list[Night] = field(default_factory=list)
     sample_map: dict[str, list[Sample]] = field(default_factory=dict)
+    weights: list[WeighIn] = field(default_factory=list)
+    goal: float | None = None
     fp: str = "1|1"
     synced: datetime | None = None
 
@@ -25,6 +27,12 @@ class FakeSource:
 
     def nights(self, since, until):
         return [n for n in self.night_list if since.date() <= n.day < until.date()]
+
+    def weigh_ins(self, since, until):
+        return [w for w in self.weights if since <= w.time < until]
+
+    def weight_goal(self):
+        return self.goal
 
     def fingerprint(self):
         return self.fp
@@ -41,7 +49,7 @@ def demo_source(today=None) -> FakeSource:
     from .models import Activity, ExerciseSet, Night, Sample
 
     today = today or datetime.now(config.TZ).date()
-    src = FakeSource(fp="demo", synced=datetime.now(timezone.utc) - timedelta(hours=3))
+    src = FakeSource(fp="demo", synced=datetime.now(timezone.utc) - timedelta(hours=3), goal=77.0)
     first = today - timedelta(days=70)
 
     def at(d, h, m=0):
@@ -51,6 +59,8 @@ def demo_source(today=None) -> FakeSource:
         d = first + timedelta(days=i)
         wk, dow, k = i // 7, d.weekday(), f"{d.isoformat()}"
         src.night_list.append(Night(d, 60 + (3 if i % 2 else -3), 48 + (i % 3 == 0), 27000 + 600 * (i % 4 - 2)))
+        if i % 3 == 0:  # a weigh-in every third morning, drifting toward the goal
+            src.weights.append(WeighIn(at(d, 7), round(80.6 - 0.04 * i + (0.3 if i % 2 else -0.2), 1)))
         if dow in (0, 3):
             pace = 345 - 1.5 * wk + (0 if dow == 0 else 8)
             a = Activity(f"run-{k}", at(d, 7 if dow == 0 else 19, 0 if dow == 0 else 50), 1800 + 300 * (dow == 0),

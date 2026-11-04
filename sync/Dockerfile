@@ -1,7 +1,8 @@
 # syntax=docker/dockerfile:1
-# garmin-grafana sync, pinned to a commit, with two patches:
+# garmin-grafana sync, pinned to a commit, with three patches:
 #  - garminconnect 0.3.7 -> 0.3.20 (Garmin's 2026 login changes)
 #  - fetch exercise sets for HIIT activities too, not only strength
+#  - store the Garmin weight goal (patch_weight_goal.py)
 FROM ghcr.io/astral-sh/uv:0.6.17-python3.13-bookworm-slim AS build
 ARG GG_COMMIT=d6bd12b403d68084a2094fd16586635e3b624c94
 ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1
@@ -13,10 +14,12 @@ RUN git init -q . \
  && git remote add origin https://github.com/arpanghosh8453/garmin-grafana.git \
  && git fetch -q --depth 1 origin "$GG_COMMIT" \
  && git checkout -q FETCH_HEAD
+COPY patch_weight_goal.py /tmp/
 RUN sed -i 's/"garminconnect==0.3.7"/"garminconnect==0.3.20"/' pyproject.toml \
  && grep -q '"garminconnect==0.3.20"' pyproject.toml \
  && sed -i "s/if 'strength' in activity_type_key.lower()/if ('strength' in activity_type_key.lower() or 'hiit' in activity_type_key.lower())/" src/garmin_grafana/garmin_fetch.py \
  && grep -q "or 'hiit' in activity_type_key.lower())" src/garmin_grafana/garmin_fetch.py \
+ && python3 /tmp/patch_weight_goal.py src/garmin_grafana/garmin_fetch.py \
  && uv lock \
  && uv sync --locked
 

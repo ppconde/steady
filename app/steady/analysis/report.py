@@ -6,10 +6,11 @@ from math import ceil
 from typing import Literal, Protocol
 
 from .. import config
-from ..models import Activity, ExerciseSet, Night, Sample
+from ..models import Activity, ExerciseSet, Night, Sample, WeighIn
 from .recovery import Gauge, baseline, gauge, off_names, usual_hard_pairs, usual_week_load, week_load
 from .running import RunningTrend, effort, is_run, is_strength, running_trend
 from .strength import StrengthProgress, strength_progress
+from .weight import WeightTrend, weight_trend
 
 Verdict = Literal["yes", "no", "mixed", "not_enough_data"]
 _RANK = {"easy": 1, "moderate": 2, "hard": 3}
@@ -20,17 +21,20 @@ class DataSource(Protocol):
     def samples(self, activity_id: str) -> list[Sample]: ...
     def exercise_sets(self, since: datetime, until: datetime) -> list[ExerciseSet]: ...
     def nights(self, since: datetime, until: datetime) -> list[Night]: ...
+    def weigh_ins(self, since: datetime, until: datetime) -> list[WeighIn]: ...
+    def weight_goal(self) -> float | None: ...
     def fingerprint(self) -> str: ...
     def last_sync(self) -> datetime | None: ...
 
 
-def verdict(running: RunningTrend, strength: StrengthProgress) -> Verdict:
-    ds = [d for d in (running.direction, strength.direction) if d is not None]
+def verdict(*trends) -> Verdict:
+    """Yes when most of the signals with data point up, no when most point down."""
+    ds = [t.direction for t in trends if t.direction is not None]
     if not ds:
         return "not_enough_data"
-    if all(d == "up" for d in ds):
+    if 2 * ds.count("up") > len(ds):
         return "yes"
-    if all(d == "down" for d in ds):
+    if 2 * ds.count("down") > len(ds):
         return "no"
     return "mixed"
 
@@ -88,6 +92,7 @@ class Report:
     gauge: Gauge
     running: RunningTrend
     strength: StrengthProgress
+    weight: WeightTrend
     week: list[DayCell]
     usual_pairs: set
     week_load: float
@@ -106,9 +111,11 @@ def build_report(src: DataSource, end: date, start: date | None = None, today: d
     today = today or datetime.now(config.TZ).date()
     if start is None:  # week view / week review
         start, days, weeks = end - timedelta(days=end.weekday()), 28, 6
+        recent = 7
     else:  # custom range: compare with the same-length period before
         days = (end - start).days + 1
         weeks = max(6, ceil(days / 7))
+        recent = days
     lookback = max(2 * days, 7 * weeks, 7 * 9, config.BASELINE_DAYS + 4)
     since, until = _utc(end - timedelta(days=lookback)), _utc(end + timedelta(days=1))
 
@@ -117,10 +124,11 @@ def build_report(src: DataSource, end: date, start: date | None = None, today: d
     nights = [n for n in src.nights(since, until) if n.day <= end]
     running = running_trend(acts, src.samples, end, weeks)
     strength = strength_progress(sets, end, days)
+    weight = weight_trend(src.weigh_ins(since, until), src.weight_goal(), end, recent, max(days, recent))
     judged = [n for n in nights if end - timedelta(days=3) < n.day <= end
               and (n.hrv, n.rhr, n.sleep_s) != (None, None, None)]
-    return Report(start=start, end=end, verdict=verdict(running, strength), gauge=gauge(nights, acts, end),
-                  running=running, strength=strength,
+    return Report(start=start, end=end, verdict=verdict(running, strength, weight), gauge=gauge(nights, acts, end),
+                  running=running, strength=strength, weight=weight,
                   week=week_row(acts, end - timedelta(days=end.weekday()), today),
                   usual_pairs=usual_hard_pairs(acts, end), week_load=week_load(acts, end),
                   usual_load=usual_week_load(acts, end), latest=nights[-1] if nights else None,

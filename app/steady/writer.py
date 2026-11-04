@@ -15,7 +15,7 @@ NUM = re.compile(r"\d+(?:[.:,]\d+)*")
 SYSTEM = ("You write a short weekly training review for one person from their Garmin data. "
           "Write one friendly paragraph of at most 150 words. The verdicts in the findings are final; "
           "don't contradict them. You may point out patterns visible in the summary. "
-          "Use only numbers that appear in the input. No medical advice, no plans or future workouts.")
+          "Use only numbers that appear in the input. No medical advice, no plans or future workouts, no diet or calorie advice.")
 
 
 def numbers_ok(text: str, source: str) -> bool:
