@@ -53,7 +53,7 @@ function spark(svg, points, up) {
   const y = (v) => (hi === lo ? 25 : up ? 44 - ((v - lo) / (hi - lo)) * 38 : 6 + ((v - lo) / (hi - lo)) * 38);
   const line = document.createElementNS("http://www.w3.org/2000/svg", "polyline");
   Object.entries({ points: points.map(([d, v]) => `${((parse(d) - t0) / span) * 196 + 2},${y(v)}`).join(" "),
-    fill: "none", stroke: "#151515", "stroke-width": 5, "stroke-linecap": "round", "stroke-linejoin": "round",
+    fill: "none", stroke: "currentColor", "stroke-width": 2.5, "stroke-linecap": "round", "stroke-linejoin": "round",
     "vector-effect": "non-scaling-stroke" }).forEach(([k, val]) => line.setAttribute(k, val));
   svg.append(line);
 }
@@ -73,10 +73,9 @@ function render({ report: r, review, last_sync }, end) {
   } else { sync.textContent = "No sync yet"; sync.classList.add("stale"); }
 
   // verdict
-  const V = { yes: "Yes ↗", no: "No ↘", mixed: "Mixed", not_enough_data: "Building your baseline" };
-  const v = $("verdict");
-  v.textContent = V[r.verdict];
-  v.style.fontSize = r.verdict === "not_enough_data" ? "44px" : "";
+  const V = { yes: "Yes", no: "No", mixed: "Mixed", not_enough_data: "Building your baseline" };
+  $("verdict").textContent = V[r.verdict];
+  document.querySelector(".verdict").dataset.v = r.verdict;
   const word = { up: "improving", down: "slipping", flat: "holding steady" };
   const parts = [];
   parts.push(r.running.direction ? `Running ${word[r.running.direction]}` : "Not enough runs to compare");
@@ -88,6 +87,7 @@ function render({ report: r, review, last_sync }, end) {
   const G = { fresh: ["No · fresh", 150], normal: ["No · normal", 90], strained: ["Strained", 30], building_baseline: ["Building baseline", null] };
   const [gw, angle] = G[r.gauge];
   $("gauge-word").textContent = gw;
+  document.querySelector(".gauge").dataset.g = r.gauge;
   const needle = $("needle");
   needle.style.display = angle == null ? "none" : "";
   if (angle != null) {
@@ -146,8 +146,8 @@ function render({ report: r, review, last_sync }, end) {
   $("days").replaceChildren(...r.week.map((c, i) => {
     const kind = (s) => (s.sport.includes("running") ? "run" : /strength|hiit/.test(s.sport) ? "strength" : "other");
     const blocks = c.future ? [h("div", { class: "blk future" })]
-      : c.sessions.length ? c.sessions.map((s) => h("div", { class: `blk ${kind(s)}` }, s.label))
-      : [h("div", { class: "blk rest" }, "Rest")];
+      : c.sessions.length ? c.sessions.map((s) => h("div", { class: `blk ${kind(s)}` }, h("span", {}, s.label)))
+      : [h("div", { class: "blk rest" }, h("span", {}, "Rest"))];
     const lvl = c.future ? 0 : RANK[c.effort] || 0;
     const label = c.future ? "" : c.effort === "rest" ? "Rest" : c.effort[0].toUpperCase() + c.effort.slice(1) + (c.sessions.length > 1 ? ` · ${c.sessions.length} sessions` : "");
     return h("li", { class: `day${c.future ? " future" : ""}${c.day === t ? " today" : ""}` },

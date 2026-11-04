@@ -7,3 +7,4 @@ __pycache__/
 .venv/
 .pytest_cache/
 .impeccable/hook.cache.json
+.impeccable/review/
