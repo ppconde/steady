@@ -34,3 +34,9 @@ Last night as a stage bar where the hatching gets denser the deeper the sleep (d
 
 ## Verdict scorecard
 The signals the verdict counts (running, strength, weight), each with a pen mark: a green tick for improving, a cross for slipping, a squiggle for holding, a dashed circle for no call yet.
+
+## Mascot
+Shelly the tortoise ("slow and steady") sits in the Overtraining box. Pose follows the gauge: jogging with a green sweatband when fresh, walking when normal, napping in its shell when strained.
+
+## Green lettering
+Green labels and highlighted numbers use Gochi Hand (upright marker lettering); notes stay in Kalam.
