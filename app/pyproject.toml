@@ -1,0 +1,18 @@
+[project]
+name = "modform"
+version = "0.1.0"
+requires-python = ">=3.13"
+dependencies = ["anthropic==2.4.0"]
+
+[project.optional-dependencies]
+dev = ["pytest"]
+
+[tool.setuptools]
+packages = ["modform", "modform.analysis"]
+
+[tool.setuptools.package-data]
+modform = ["static/*", "static/fonts/*"]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]
