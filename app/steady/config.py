@@ -11,7 +11,6 @@ ANTHROPIC_API_KEY = os.getenv("ANTHROPIC_API_KEY", "")
 CLAUDE_MODEL = os.getenv("CLAUDE_MODEL", "claude-sonnet-5-5")
 GOAL = os.getenv("GOAL", "General health; improve running and strength")
 DB_PATH = os.getenv("DB_PATH", "/data/steady.db")
-TARGET_WEIGHT_KG = float(os.getenv("TARGET_WEIGHT_KG") or 0) or None  # else the Garmin weight goal
 
 # Analysis thresholds
 EFFORT_LOAD_MODERATE = 50

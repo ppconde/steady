@@ -12,7 +12,7 @@ curl -fsSL https://raw.githubusercontent.com/ppconde/steady/main/install.sh | sh
 It installs git and Docker if they're missing, puts Steady in `~/steady`, and asks for:
 
 - your Anthropic API key (optional; without it the review is a plain written summary)
-- your training goal, time zone and, optionally, a target weight (otherwise your Garmin Connect weight goal is used)
+- your training goal and time zone
 - your Garmin email, password and 2FA code, once. Only the login token is kept.
 
 Then it starts everything and backfills 6 months of history in the background.

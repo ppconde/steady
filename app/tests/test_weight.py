@@ -60,7 +60,6 @@ def test_influx_weigh_ins_grams_to_kg(monkeypatch):
 
 def test_influx_weight_goal(monkeypatch):
     monkeypatch.setattr(influx, "query", fake({"WeightGoal": [{"time": 1793800000, "last": 75.0}]}))
-    monkeypatch.setattr(config, "TARGET_WEIGHT_KG", None)
     assert influx.weight_goal() == 75.0
-    monkeypatch.setattr(config, "TARGET_WEIGHT_KG", 72.5)  # .env override wins
-    assert influx.weight_goal() == 72.5
+    monkeypatch.setattr(influx, "query", fake({}))
+    assert influx.weight_goal() is None
