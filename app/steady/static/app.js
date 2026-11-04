@@ -49,6 +49,7 @@ function render({ report: r, review, last_sync }, end) {
   $("weekno").textContent = `Week ${isoWeek(weekStart)}`;
   $("dates").textContent = `${short(weekStart)} – ${short(end)}`;
   $("next").disabled = current;
+  $("week-opt").textContent = current ? "This week" : `Week ${isoWeek(weekStart)}`;
 
   const sync = $("sync");
   if (last_sync) {
@@ -175,7 +176,7 @@ $("review-form").addEventListener("submit", async (e) => {
   if (polling) return;
   const status = $("review-status"), range = new FormData(e.target).get("range");
   let start, end;
-  if (range === "week") { start = iso(monday(today())); end = tday; }
+  if (range === "week") { start = iso(weekStart); const s = addDays(weekStart, 6); end = s > today() ? tday : iso(s); }
   else if (range === "4w") { start = iso(addDays(today(), -27)); end = tday; }
   else { start = $("from").value; end = $("to").value; }
   const res = await fetch("/api/review", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ start, end }) });
@@ -191,8 +192,9 @@ $("review-form").addEventListener("submit", async (e) => {
     catch { if (++misses < 20) return setTimeout(tick, 3000); j = { status: "done", review: null }; }
     if (j.status === "running") return setTimeout(tick, 3000);
     polling = false;
-    status.textContent = j.review ? "Done. It's under Past reviews." : "That review was interrupted. Press Write it to try again.";
-    if (j.review) await loadPast(j.review.id);
+    if (!j.review) { status.textContent = "That review was interrupted. Press Write it to try again."; return; }
+    status.textContent = j.review.kind === "week" ? "Done. It's in Claude's take below." : "Done. It's under Past reviews.";
+    if (j.review.kind === "week") await load(); else await loadPast(j.review.id);
   };
   setTimeout(tick, 3000);
 });

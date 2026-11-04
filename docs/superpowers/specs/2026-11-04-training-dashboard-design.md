@@ -173,6 +173,7 @@ All in Python, from InfluxDB. Claude sees only the computed findings and period 
   in the Anthropic Console.
 
 ### When reviews are written
+- *(Changed 2026-11-04: reviews are manual only. "This week" writes the week's take; other ranges go to Past reviews.)*
 - **Automatically at ~07:30** (after overnight sleep/HRV has synced) and **~21:30** (after the day's
   activities have synced). Times configurable.
 - **Skip a run if nothing new has synced** since the last review.

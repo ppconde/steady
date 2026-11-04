@@ -6,7 +6,7 @@ import urllib.request
 
 import pytest
 
-from steady import scheduler, server
+from steady import review, server
 from steady.demo import FakeSource
 
 
@@ -35,8 +35,8 @@ def test_week_endpoint_shape(base):
 
 
 def test_review_busy(base, monkeypatch):
-    real = scheduler.write_review
-    monkeypatch.setattr(scheduler, "write_review", lambda *a: (time.sleep(1), real(*a))[1])
+    real = review.write_review
+    monkeypatch.setattr(review, "write_review", lambda *a: (time.sleep(1), real(*a))[1])
     r = {"start": "2026-10-01", "end": "2026-10-31"}
     s1, b1 = call(f"{base}/api/review", r)
     s2, _ = call(f"{base}/api/review", r)
@@ -60,3 +60,18 @@ def test_review_bad_range(base, body):
 def test_static_traversal_blocked(base):
     assert call(f"{base}/static/../server.py")[0] == 404
     assert call(f"{base}/static/%2e%2e/server.py")[0] == 404
+
+
+def wait(base, job_id):
+    for _ in range(40):
+        _, job = call(f"{base}/api/review/{job_id}")
+        if job["status"] == "done":
+            return job
+        time.sleep(0.1)
+
+
+def test_week_review_shows_on_week(base):
+    s, b = call(f"{base}/api/review", {"start": "2026-10-26", "end": "2026-11-01"})
+    assert s == 202 and wait(base, b["job_id"])["review"]["kind"] == "week"
+    assert call(f"{base}/api/week?end=2026-11-01")[1]["review"]["kind"] == "week"
+    assert call(f"{base}/api/reviews")[1] == []

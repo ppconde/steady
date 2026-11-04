@@ -22,15 +22,14 @@ def test_stale_job_recovered():
     assert store.start_job(None, D) is not None
 
 
-def test_review_for_week_picks_last_scheduled():
+def test_review_for_week_picks_last_week_review():
     mon = date(2026, 11, 2)
-    a = store.save_review(None, D, "scheduled", "first", "template", "1", now=datetime(2026, 11, 3, 7, 30, tzinfo=timezone.utc))
-    b = store.save_review(None, D, "scheduled", "second", "claude", "2", now=datetime(2026, 11, 4, 7, 30, tzinfo=timezone.utc))
+    a = store.save_review(mon, D, "week", "first", "template", "1", now=datetime(2026, 11, 3, 7, 30, tzinfo=timezone.utc))
+    b = store.save_review(mon, D, "week", "second", "claude", "2", now=datetime(2026, 11, 4, 7, 30, tzinfo=timezone.utc))
     store.save_review(D, D, "custom", "c", "claude", "2", now=datetime(2026, 11, 5, 7, 30, tzinfo=timezone.utc))
     assert store.review_for_week(mon)["id"] == b != a
     assert store.review_for_week(mon - timedelta(days=7)) is None
     assert [r["text"] for r in store.custom_reviews()] == ["c"]
-    assert store.last_fingerprint() == "2"
 
 
 def test_get_job_reports_stale_as_done():

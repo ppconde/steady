@@ -9,7 +9,7 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import parse_qs, unquote, urlsplit
 
-from . import config, scheduler, store
+from . import config, review, store
 from .analysis.report import build_report, report_json
 
 log = logging.getLogger(__name__)
@@ -28,14 +28,18 @@ def _date(s) -> date | None:
         return None
 
 
+def _kind(start: date, end: date) -> str:
+    return "week" if start.weekday() == 0 and (end - start).days <= 6 else "custom"
+
+
 def _run_job(src, job: int, start: date, end: date) -> None:
-    review = None
+    saved = None
     try:
-        review = scheduler.run_review(src, start, end, "custom")
+        saved = review.run_review(src, start, end, _kind(start, end))
     except Exception:
         log.exception("custom review failed")
     finally:
-        store.finish_job(job, review)
+        store.finish_job(job, saved)
 
 
 def make_server(src, host: str = "0.0.0.0", port: int = 8080) -> ThreadingHTTPServer:
@@ -68,6 +72,8 @@ def make_server(src, host: str = "0.0.0.0", port: int = 8080) -> ThreadingHTTPSe
             path = url.path
             if path == "/":
                 return self._file("index.html")
+            if path == "/favicon.ico":
+                return self._file("favicon.svg")
             if path.startswith("/static/"):
                 return self._file(path.removeprefix("/static/"))
             if path == "/api/week":

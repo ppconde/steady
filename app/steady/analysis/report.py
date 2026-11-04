@@ -104,7 +104,7 @@ def _utc(d: date) -> datetime:
 
 def build_report(src: DataSource, end: date, start: date | None = None, today: date | None = None) -> Report:
     today = today or datetime.now(config.TZ).date()
-    if start is None:  # week view / scheduled review
+    if start is None:  # week view / week review
         start, days, weeks = end - timedelta(days=end.weekday()), 28, 6
     else:  # custom range: compare with the same-length period before
         days = (end - start).days + 1

@@ -1,12 +1,12 @@
 """SQLite: saved reviews and the one-at-a-time review job."""
 import sqlite3
-from datetime import date, datetime, time, timedelta, timezone
+from datetime import date, datetime, timedelta, timezone
 
 from . import config
 
 SCHEMA = """
 CREATE TABLE IF NOT EXISTS reviews(id INTEGER PRIMARY KEY, created_at TEXT, start TEXT, end TEXT,
-  kind TEXT CHECK(kind IN ('scheduled','custom')), text TEXT, source TEXT, fingerprint TEXT);
+  kind TEXT CHECK(kind IN ('week','custom')), text TEXT, source TEXT, fingerprint TEXT);
 CREATE TABLE IF NOT EXISTS jobs(id INTEGER PRIMARY KEY, created_at TEXT, start TEXT, end TEXT,
   status TEXT CHECK(status IN ('running','done')), review_id INTEGER);
 """
@@ -37,11 +37,9 @@ def save_review(start: date | None, end: date, kind: str, text: str, source: str
 
 
 def review_for_week(week_start: date) -> dict | None:
-    lo = datetime.combine(week_start, time(), config.TZ).astimezone(timezone.utc).isoformat()
-    hi = datetime.combine(week_start + timedelta(days=7), time(), config.TZ).astimezone(timezone.utc).isoformat()
     with _db() as c:
-        r = c.execute("SELECT * FROM reviews WHERE kind='scheduled' AND created_at >= ? AND created_at < ? "
-                      "ORDER BY created_at DESC, id DESC LIMIT 1", (lo, hi)).fetchone()
+        r = c.execute("SELECT * FROM reviews WHERE kind='week' AND start=? ORDER BY created_at DESC, id DESC LIMIT 1",
+                      (week_start.isoformat(),)).fetchone()
     return dict(r) if r else None
 
 
@@ -54,12 +52,6 @@ def get_review(review_id: int) -> dict | None:
     with _db() as c:
         r = c.execute("SELECT * FROM reviews WHERE id=?", (review_id,)).fetchone()
     return dict(r) if r else None
-
-
-def last_fingerprint() -> str | None:
-    with _db() as c:
-        r = c.execute("SELECT fingerprint FROM reviews WHERE kind='scheduled' ORDER BY created_at DESC, id DESC LIMIT 1").fetchone()
-    return r[0] if r else None
 
 
 def start_job(start: date | None, end: date) -> int | None:

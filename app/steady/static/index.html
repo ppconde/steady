@@ -4,6 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Steady</title>
+  <link rel="icon" href="/static/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
@@ -25,7 +26,7 @@
       <form id="review-form">
         <fieldset>
           <legend class="note">Write a review for</legend>
-          <label><input type="radio" name="range" value="week" checked> This week</label>
+          <label><input type="radio" name="range" value="week" checked> <span id="week-opt">This week</span></label>
           <label><input type="radio" name="range" value="4w"> Last 4 weeks</label>
           <label><input type="radio" name="range" value="custom"> Custom</label>
           <span class="custom">
