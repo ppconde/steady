@@ -7,7 +7,7 @@
         "rule": "clipped-overflow-container",
         "value": "*",
         "files": [
-          "/Users/ppconde/Documents/repos/garmin-mcp/.superpowers/brainstorm/91066-1793818998/content/style-directions.html"
+          "/Users/ppconde/Documents/repos/steady/.superpowers/brainstorm/91066-1793818998/content/style-directions.html"
         ],
         "createdAt": "2026-11-04T19:04:19.631Z",
         "reason": "Claude: decorative circles in a throwaway brainstorm mockup are meant to be cropped by the tile edge, no popovers exist"
@@ -16,7 +16,7 @@
         "rule": "clipped-overflow-container",
         "value": "*",
         "files": [
-          "/Users/ppconde/Documents/repos/garmin-mcp/.superpowers/brainstorm/91066-1793818998/content/blocks-v2.html"
+          "/Users/ppconde/Documents/repos/steady/.superpowers/brainstorm/91066-1793818998/content/blocks-v2.html"
         ],
         "createdAt": "2026-11-04T19:08:08.344Z",
         "reason": "Claude: decorative circles in a throwaway brainstorm mockup are meant to be cropped by the tile edge, no popovers exist"
