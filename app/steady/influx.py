@@ -76,8 +76,6 @@ def weigh_ins(since: datetime, until: datetime) -> list[WeighIn]:
 
 
 def weight_goal() -> float | None:
-    if config.TARGET_WEIGHT_KG:
-        return config.TARGET_WEIGHT_KG
     rows = query('SELECT last("goal_kg") FROM "WeightGoal"')  # written by the patched sync, see sync/Dockerfile
     return rows[0]["last"] if rows else None
 

@@ -60,7 +60,6 @@ main() {
     ask GOAL "Your training goal, in a few words" "General health; improve running and strength"
     TZ_GUESS=$(cat /etc/timezone 2>/dev/null || timedatectl show -p Timezone --value 2>/dev/null || echo Europe/Lisbon)
     ask TZONE "Time zone" "$TZ_GUESS"
-    ask TARGET "Target weight in kg (empty: use your Garmin Connect weight goal)" ""
     PASS=$(od -An -N24 -tx1 /dev/urandom | tr -d ' \n')
     # shellcheck disable=SC1003  # strip characters .env quoting can't hold
     GOAL=$(printf '%s' "$GOAL" | tr -d '"$`\\')
@@ -70,7 +69,6 @@ INFLUXDB_PASSWORD=$PASS
 TZ=$TZONE
 ANTHROPIC_API_KEY=$KEY
 GOAL="$GOAL"
-TARGET_WEIGHT_KG=$TARGET
 EOF
     )
     echo "Saved to $DIR/.env (only you can read it). Edit it later and re-run this script to apply."
