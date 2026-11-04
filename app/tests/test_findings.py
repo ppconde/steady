@@ -44,3 +44,15 @@ def test_not_enough_data():
 
 def test_template_joins():
     assert template_text(["A.", "B."]) == "A. B."
+
+
+def test_strength_wording_follows_period():
+    from modform.analysis.strength import ExerciseChange
+    st = StrengthProgress(1, 0, 1, [ExerciseChange("PUSH_UP", "reps", 18, 22)], "up")
+    week = findings(base(strength=st))
+    assert any("previous 4 weeks" in f for f in week)
+    custom = build_report(FakeSource(), date(2026, 10, 31), start=date(2026, 10, 1), today=END)
+    fs = findings(dataclasses.replace(custom, strength=st))
+    assert any("previous 31 days" in f for f in fs) and not any("4 weeks" in f for f in fs)
+    custom = build_report(FakeSource(), date(2026, 10, 28), start=date(2026, 10, 1), today=END)
+    assert any("previous 4 weeks" in f for f in findings(dataclasses.replace(custom, strength=st)))

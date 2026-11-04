@@ -95,6 +95,7 @@ class Report:
     latest: Night | None
     missing_nights: int  # of the 3 judged nights, how many had no recovery data
     off_signals: list[str]  # signals outside the usual band on any judged night
+    compare_days: int  # strength compares this many days with the same length before
 
 
 def _utc(d: date) -> datetime:
@@ -124,6 +125,7 @@ def build_report(src: DataSource, end: date, start: date | None = None, today: d
                   usual_pairs=usual_hard_pairs(acts, end), week_load=week_load(acts, end),
                   usual_load=usual_week_load(acts, end), latest=nights[-1] if nights else None,
                   missing_nights=3 - len(judged),
+                  compare_days=days,
                   off_signals=sorted({x for n in judged for x in off_names(n, baseline(nights, end))}))
 
 

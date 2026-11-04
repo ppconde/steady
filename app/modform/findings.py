@@ -40,7 +40,9 @@ def findings(r: Report) -> list[str]:
     else:
         top = ", ".join(f"{c.exercise.split('/')[-1].replace('_', ' ').lower()} "
                         f"{_num(c.before)} → {_num(c.after)} {c.unit}" for c in st.changes[:3])
-        out.append(f"{st.up} of {st.total} exercises up vs the previous 4 weeks ({top}).")
+        d = r.compare_days
+        span = "week" if d == 7 else f"{d // 7} weeks" if d % 7 == 0 else f"{d} days"
+        out.append(f"{st.up} of {st.total} exercises up vs the previous {span} ({top}).")
 
     g = _GAUGE[r.gauge]
     if r.gauge in ("normal", "strained") and r.off_signals:
