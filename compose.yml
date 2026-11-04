@@ -1,4 +1,4 @@
-# modform: Garmin sync -> InfluxDB -> dashboard on :8080. Only the dashboard publishes a port.
+# Steady: Garmin sync -> InfluxDB -> dashboard on :8080. Only the dashboard publishes a port.
 services:
   fetch:
     build: ./sync

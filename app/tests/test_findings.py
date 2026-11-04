@@ -1,11 +1,11 @@
 import dataclasses
 from datetime import date, timedelta
 
-from modform.analysis.report import build_report
-from modform.analysis.running import RunningTrend
-from modform.analysis.strength import StrengthProgress
-from modform.demo import FakeSource
-from modform.findings import findings, template_text
+from steady.analysis.report import build_report
+from steady.analysis.running import RunningTrend
+from steady.analysis.strength import StrengthProgress
+from steady.demo import FakeSource
+from steady.findings import findings, template_text
 from tests.helpers import act, utc
 
 END = date(2026, 11, 1)
@@ -47,7 +47,7 @@ def test_template_joins():
 
 
 def test_strength_wording_follows_period():
-    from modform.analysis.strength import ExerciseChange
+    from steady.analysis.strength import ExerciseChange
     st = StrengthProgress(1, 0, 1, [ExerciseChange("PUSH_UP", "reps", 18, 22)], "up")
     week = findings(base(strength=st))
     assert any("previous 4 weeks" in f for f in week)

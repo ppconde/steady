@@ -1,7 +1,7 @@
 from datetime import date, timedelta
 
-from modform.analysis.recovery import gauge, usual_hard_pairs, usual_week_load, week_load
-from modform.models import Night
+from steady.analysis.recovery import gauge, usual_hard_pairs, usual_week_load, week_load
+from steady.models import Night
 from tests.helpers import act, utc
 
 END = date(2026, 11, 1)  # a Sunday

@@ -2,8 +2,8 @@ from datetime import date, timedelta
 
 import pytest
 
-from modform.analysis.running import after_strength, effort, pace_at_hr, running_trend
-from modform.models import Sample
+from steady.analysis.running import after_strength, effort, pace_at_hr, running_trend
+from steady.models import Sample
 from tests.helpers import act, utc
 
 

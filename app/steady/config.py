@@ -10,7 +10,7 @@ TZ = ZoneInfo(os.getenv("TZ") or "Europe/Lisbon")
 ANTHROPIC_API_KEY = os.getenv("ANTHROPIC_API_KEY", "")
 CLAUDE_MODEL = os.getenv("CLAUDE_MODEL", "claude-sonnet-5-5")
 GOAL = os.getenv("GOAL", "General health; improve running and strength")
-DB_PATH = os.getenv("DB_PATH", "/data/modform.db")
+DB_PATH = os.getenv("DB_PATH", "/data/steady.db")
 REVIEW_TIMES = tuple(os.getenv("REVIEW_TIMES", "07:30,21:30").split(","))
 
 # Analysis thresholds

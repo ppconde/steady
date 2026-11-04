@@ -1,7 +1,7 @@
 from datetime import date
 
-from modform.analysis.report import build_report
-from modform.demo import demo_source
+from steady.analysis.report import build_report
+from steady.demo import demo_source
 
 
 def test_demo_fills_every_tile():

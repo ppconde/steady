@@ -1,4 +1,4 @@
-# modform
+# Steady
 
 Garmin training dashboard for a Raspberry Pi: "am I improving?" and "am I overtraining?",
 with a twice-daily review written by Claude.

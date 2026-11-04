@@ -6,8 +6,8 @@ import urllib.request
 
 import pytest
 
-from modform import scheduler, server
-from modform.demo import FakeSource
+from steady import scheduler, server
+from steady.demo import FakeSource
 
 
 @pytest.fixture

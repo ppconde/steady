@@ -1,7 +1,7 @@
 from datetime import datetime
 
-from modform import config, scheduler, store
-from modform.demo import FakeSource
+from steady import config, scheduler, store
+from steady.demo import FakeSource
 
 
 def at(h, m):

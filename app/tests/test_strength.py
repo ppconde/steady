@@ -1,7 +1,7 @@
 from datetime import date, datetime, timedelta, timezone
 
-from modform.analysis.strength import strength_progress
-from modform.models import ExerciseSet
+from steady.analysis.strength import strength_progress
+from steady.models import ExerciseSet
 
 END = date(2026, 11, 2)
 

@@ -5,7 +5,7 @@ from . import config, influx, scheduler, store
 from .server import make_server
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s: %(message)s")
-log = logging.getLogger("modform")
+log = logging.getLogger("steady")
 
 store.clear_running()
 if "--demo" in sys.argv:

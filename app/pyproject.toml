@@ -1,5 +1,5 @@
 [project]
-name = "modform"
+name = "steady"
 version = "0.1.0"
 requires-python = ">=3.13"
 dependencies = ["anthropic==2.4.0"]
@@ -8,10 +8,10 @@ dependencies = ["anthropic==2.4.0"]
 dev = ["pytest"]
 
 [tool.setuptools]
-packages = ["modform", "modform.analysis"]
+packages = ["steady", "steady.analysis"]
 
 [tool.setuptools.package-data]
-modform = ["static/*", "static/fonts/*"]
+steady = ["static/*", "static/fonts/*"]
 
 [tool.pytest.ini_options]
 pythonpath = ["."]

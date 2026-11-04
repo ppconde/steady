@@ -1,6 +1,6 @@
-# modform — Garmin training dashboard on a Raspberry Pi — design
+# steady — Garmin training dashboard on a Raspberry Pi — design
 
-Date: 2026-11-04 · Status: draft for review · Project name: **modform** ("mod" for mid-century modern, "form" for training form)
+Date: 2026-11-04 · Status: draft for review · Project name: **steady** ("mod" for mid-century modern, "form" for training form)
 
 ## Intent
 
@@ -263,6 +263,6 @@ Top to bottom:
 - Pace at 140 bpm from per-second samples, with a whole-run fallback.
 - "Month" = rolling 4 weeks; custom ranges compared with the same-length period before.
 - Past weeks recalculated as of their Sunday; custom reviews in a separate list.
-- Project name "modform".
+- Project name "steady".
 - Dashboard on port 8080 (Pi-hole has 80).
 - Server-side refusal fallback (`fallbacks: "default"`) enabled on the API call.

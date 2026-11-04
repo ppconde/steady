@@ -1,7 +1,7 @@
 from datetime import date, datetime, timezone
 
-from modform import influx
-from modform.models import Activity
+from steady import influx
+from steady.models import Activity
 
 
 def fake(rows_by_measurement):

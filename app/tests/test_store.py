@@ -1,7 +1,7 @@
 import sqlite3
 from datetime import date, datetime, timedelta, timezone
 
-from modform import config, store
+from steady import config, store
 
 D = date(2026, 11, 2)
 

@@ -4,10 +4,10 @@ from types import SimpleNamespace
 import anthropic
 import httpx2
 
-from modform import config, writer
-from modform.analysis.report import build_report
-from modform.demo import FakeSource
-from modform.findings import template_text
+from steady import config, writer
+from steady.analysis.report import build_report
+from steady.demo import FakeSource
+from steady.findings import template_text
 
 FS = ["Pace at 140 bpm is 5:22/km."]
 R = build_report(FakeSource(), date(2026, 11, 1), today=date(2026, 11, 1))

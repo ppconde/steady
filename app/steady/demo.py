@@ -1,4 +1,4 @@
-"""In-memory DataSource: used by tests and by `python -m modform --demo`."""
+"""In-memory DataSource: used by tests and by `python -m steady --demo`."""
 from dataclasses import dataclass, field
 from datetime import datetime
 

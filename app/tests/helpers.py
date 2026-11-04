@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta, timezone
 
-from modform.models import Activity
+from steady.models import Activity
 
 
 def act(start, sport="running", minutes=30, load=None, te=None, hr=None, speed=None, dist=None, aid=None):

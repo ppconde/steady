@@ -1,9 +1,9 @@
 from datetime import date, timedelta
 
-from modform.analysis.report import build_report, verdict, week_row
-from modform.analysis.running import RunningTrend
-from modform.analysis.strength import StrengthProgress
-from modform.demo import FakeSource
+from steady.analysis.report import build_report, verdict, week_row
+from steady.analysis.running import RunningTrend
+from steady.analysis.strength import StrengthProgress
+from steady.demo import FakeSource
 from tests.helpers import act, utc
 
 

@@ -1,6 +1,6 @@
 import pytest
 
-from modform import config
+from steady import config
 
 
 @pytest.fixture(autouse=True)
