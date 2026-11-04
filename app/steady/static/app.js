@@ -53,7 +53,7 @@ function spark(svg, points, up) {
   const y = (v) => (hi === lo ? 25 : up ? 44 - ((v - lo) / (hi - lo)) * 38 : 6 + ((v - lo) / (hi - lo)) * 38);
   const line = document.createElementNS("http://www.w3.org/2000/svg", "polyline");
   Object.entries({ points: points.map(([d, v]) => `${((parse(d) - t0) / span) * 196 + 2},${y(v)}`).join(" "),
-    fill: "none", stroke: "currentColor", "stroke-width": 2.5, "stroke-linecap": "round", "stroke-linejoin": "round",
+    fill: "none", stroke: "#151515", "stroke-width": 5, "stroke-linecap": "round", "stroke-linejoin": "round",
     "vector-effect": "non-scaling-stroke" }).forEach(([k, val]) => line.setAttribute(k, val));
   svg.append(line);
 }
@@ -73,8 +73,9 @@ function render({ report: r, review, last_sync }, end) {
   } else { sync.textContent = "No sync yet"; sync.classList.add("stale"); }
 
   // verdict
-  const V = { yes: "Yes", no: "No", mixed: "Mixed", not_enough_data: "Building your baseline" };
+  const V = { yes: "Yes ↗", no: "No ↘", mixed: "Mixed", not_enough_data: "Building your baseline" };
   $("verdict").textContent = V[r.verdict];
+  $("verdict").style.fontSize = r.verdict === "not_enough_data" ? "44px" : "";
   document.querySelector(".verdict").dataset.v = r.verdict;
   const word = { up: "improving", down: "slipping", flat: "holding steady" };
   $("verdict-line").textContent = "Each signal compared with the period before";

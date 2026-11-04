@@ -1,39 +1,15 @@
-# Design: Conceptual Sketch
+# Design
 
-Steady's dashboard reads as a designer's working sketch sheet: hand-ruled ink boxes on grainy paper, graphite notes, crosshatching, and one printed green that only marks meaning.
+Mid-century colour blocks: flat tiles of blue, mustard, pink, red, black and cream on a cream sheet with a white mat. Anton for numbers and headings (uppercase), Work Sans for text. No gradients, shadows or rounded corners; the only curves are the verdict discs and the gauge.
 
-## Tokens (`app/steady/static/style.css` `:root`)
+## Tokens
+- `--blue #2347A8` · `--black #151515` · `--mustard #F2A922` · `--pink #F3A6B5` · `--red #E8502F` · `--cream #F4EEE1` · `--white #FBF8F2`
+- Mustard means "good/now" (up ticks, today's sleep bar); red means "attention" (down marks, today underline, stale sync).
 
-| Token | Value | Job |
-|---|---|---|
-| `--paper` | `#ECEAE3` + SVG grain | page ground, label chips on hatching |
-| `--ink` | `#1D1C1A` | text, box strokes, buttons, crosshatch |
-| `--graphite` | `#55524C` | secondary text (≥4.5:1 on paper), second box stroke, hatch |
-| `--pencil` | `#A39F95` | rules, future days, inactive marks. Never text |
-| `--green` | `#116C3B` | green text: verdict yes, improving values, fresh, today; hover, focus |
-| `--marker` | `#2BA65A` (+ `--marker-soft` 38%) | highlighter: verdict swash + scribble, improving trend lines, value underlines, today box, fresh gauge zone |
+## Tiles
+- **Verdict** (blue, 2 cols): big word + arrow, note, mustard/red discs at the bottom edge; right column is a scorecard of white cards, one per signal (running, strength, weight) with a mark: tick on mustard (up), cross on red (down), squiggle (flat), dashed circle (no call).
+- **Gauge** (pink), **Running** (mustard), **Strength** (black, 2 cols), **Week** (white, 3 cols), **Weight** (pink).
+- **Sleep** (black, 2 cols): last night's total and score, stage bar (deep blue, REM pink, light cream, awake red) with a key; each night this week as cream bars on a 10 h scale, today in mustard.
+- **Claude's take** (cream, 3 cols).
 
-## Type
-- **Cabin Sketch 700**: display lettering and big numbers (verdict, week, pace, kg, headings).
-- **Kalam 400/700**: handwritten labels, notes, the review text.
-- **Work Sans 400–700**: tabular data and inputs.
-All self-hosted from `static/fonts` (OFL texts beside them).
-
-## Marks
-- **Ruled box** (`.rule`): two pseudo-element strokes, wobbled by the inline SVG filters `#rough-a` and `#rough-b`. Text is never filtered.
-- **Hatching encodes data**: run = diagonal graphite hatch, strength/HIIT = ink crosshatch, other = dots, rest = dashed outline, future = faint pencil outline. Effort is shown as 1–3 tally marks.
-- **Gauge**: hatched zones that get denser from fresh to strained, with an ink needle. Don't filter the needle: a vertical line has a zero-width box, and the filter erases it.
-- **Verdict scribble**: a loose ellipse in `--mark` (green when the verdict is yes).
-- **Controls**: ink-filled buttons with uneven radii; hover turns them green with a slight tilt; focus shows a dashed green outline.
-
-## Layout
-3-column grid with 22px gaps, max-width 1000px. Below 640px it becomes one column, and day rows become horizontal rows.
-
-## Sleep box
-Last night as a stage bar where the hatching gets denser the deeper the sleep (deep = crosshatch, REM = hatch, light = dots, awake = dashed outline). Each night this week is a hatched bar on an 80px scale (10 h = full), with today in highlighter green.
-
-## Verdict scorecard
-The signals the verdict counts (running, strength, weight), each with a pen mark: a green tick for improving, a cross for slipping, a squiggle for holding, a dashed circle for no call yet.
-
-## Green lettering
-Green labels and highlighted numbers use Gochi Hand (upright marker lettering); notes stay in Kalam.
+Mobile (≤640px): one column; verdict discs move to the top-right corner.

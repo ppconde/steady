@@ -8,25 +8,21 @@
   <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
-  <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
-    <filter id="rough-a"><feTurbulence type="fractalNoise" baseFrequency="0.03" numOctaves="2" seed="3"/><feDisplacementMap in="SourceGraphic" scale="4"/></filter>
-    <filter id="rough-b"><feTurbulence type="fractalNoise" baseFrequency="0.05" numOctaves="2" seed="11"/><feDisplacementMap in="SourceGraphic" scale="3"/></filter>
-  </svg>
   <main class="mc">
-    <header class="bar rule-line">
+    <header class="bar">
       <div class="wkname">
-        <button class="arrow" id="prev" aria-label="Previous week"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 4 C11 8 8 10 6 12 C9 14 12 17 15 20"/></svg></button>
-        <h1 class="sk" id="weekno">Week</h1>
-        <button class="arrow" id="next" aria-label="Next week"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 4 C13 8 16 10 18 12 C15 14 12 17 9 20"/></svg></button>
+        <button class="arrow" id="prev" aria-label="Previous week">‹</button>
+        <h1 class="anton" id="weekno">Week</h1>
+        <button class="arrow" id="next" aria-label="Next week">›</button>
       </div>
       <div class="meta">
         <span class="cap" id="dates"></span>
         <span class="sync" id="sync"></span>
       </div>
-      <button class="primary" id="review-btn" aria-expanded="false" aria-controls="review-panel">Review</button>
+      <button class="primary" id="review-btn" aria-expanded="false" aria-controls="review-panel">Review ↻</button>
     </header>
 
-    <section class="rule panel" id="review-panel" hidden>
+    <section class="panel" id="review-panel" hidden>
       <form id="review-form">
         <fieldset>
           <legend class="note">Write a review for</legend>
@@ -44,58 +40,49 @@
     </section>
 
     <div class="grid">
-      <section class="rule tile verdict">
-        <h2 class="cap">Are you improving?</h2>
-        <div class="verdict-word">
-          <p class="sk big" id="verdict">…</p>
-          <svg class="scribble" viewBox="0 0 300 120" preserveAspectRatio="none" aria-hidden="true"><path d="M40 70 C30 26 250 10 284 52 C306 92 120 118 44 92 C6 78 18 40 96 26 C150 16 214 18 250 30"/></svg>
+      <section class="tile verdict">
+        <div class="v-main">
+          <h2 class="cap">Are you improving?</h2>
+          <p class="anton big" id="verdict">…</p>
+          <p class="note" id="verdict-line"></p>
+          <span class="disc d1" aria-hidden="true"></span><span class="disc d2" aria-hidden="true"></span>
         </div>
-        <p class="note annot" id="verdict-line"></p>
         <ul class="signals" id="signals" aria-label="What the verdict counts"></ul>
       </section>
 
-      <section class="rule tile gauge">
+      <section class="tile gauge">
         <h2 class="cap">Overtraining?</h2>
         <svg viewBox="0 0 200 110" id="gauge-svg" role="img" aria-labelledby="gauge-word">
-          <defs>
-            <pattern id="h1" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><line x1="0" y1="0" x2="0" y2="7" stroke="#2BA65A" stroke-width="3"/></pattern>
-            <pattern id="h2" width="5" height="5" patternUnits="userSpaceOnUse" patternTransform="rotate(-45)"><line x1="0" y1="0" x2="0" y2="5" stroke="#55524C" stroke-width="1.4"/></pattern>
-            <pattern id="h3" width="4" height="4" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><path d="M0 0V4M0 0H4" stroke="#1D1C1A" stroke-width="1.4"/></pattern>
-          </defs>
-          <g class="ink" filter="url(#rough-b)">
-            <path d="M15 100 A85 85 0 0 1 72 20 L80 42 A62 62 0 0 0 38 100 Z" fill="url(#h1)"/>
-            <path d="M75 19 A85 85 0 0 1 128 19 L121 41 A62 62 0 0 0 81 41 Z" fill="url(#h2)"/>
-            <path d="M131 20 A85 85 0 0 1 185 100 L162 100 A62 62 0 0 0 122 42 Z" fill="url(#h3)"/>
-            <path d="M12 101 A88 88 0 0 1 188 101 M38 100 A62 62 0 0 1 162 100" fill="none" stroke="#1D1C1A" stroke-width="2"/>
-          </g>
-          <text x="26" y="116" class="g-l" text-anchor="middle">fresh</text><text x="174" y="116" class="g-l" text-anchor="middle">strained</text>
-          <line id="needle" x1="100" y1="100" x2="100" y2="35" stroke="#1D1C1A" stroke-width="3.5" stroke-linecap="round"/>
-          <circle cx="100" cy="100" r="6" fill="#1D1C1A"/>
+          <path d="M15 100 A85 85 0 0 1 72 20" fill="none" stroke="#151515" stroke-width="22"/>
+          <path d="M75 19 A85 85 0 0 1 128 19" fill="none" stroke="#F2A922" stroke-width="22"/>
+          <path d="M131 20 A85 85 0 0 1 185 100" fill="none" stroke="#E8502F" stroke-width="22"/>
+          <line id="needle" x1="100" y1="100" x2="100" y2="35" stroke="#151515" stroke-width="6" stroke-linecap="round"/>
+          <circle cx="100" cy="100" r="9" fill="#151515"/>
         </svg>
-        <p class="sk mid" id="gauge-word">…</p>
-        <p class="note" id="gauge-line"></p>
+        <p class="anton mid" id="gauge-word">…</p>
+        <p class="cap" id="gauge-line"></p>
       </section>
 
-      <section class="rule tile running">
+      <section class="tile running">
         <h2 class="cap">Running · pace @ 140 bpm</h2>
         <p class="num" id="pace">–</p>
         <svg viewBox="0 0 200 50" preserveAspectRatio="none" id="trend" aria-hidden="true"></svg>
-        <p class="note" id="pace-line"></p>
+        <p class="cap" id="pace-line"></p>
       </section>
 
-      <section class="rule tile strength">
+      <section class="tile strength">
         <div>
-          <h2 class="cap">Strength · HIIT &amp; gym</h2>
-          <p class="sk big" id="str-n">–</p>
-          <p class="note">exercises up<br>vs last 4 weeks</p>
+          <h2 class="cap pink">Strength · HIIT &amp; gym</h2>
+          <p class="anton big" id="str-n">–</p>
+          <p class="cap">exercises up<br>vs last 4 weeks</p>
         </div>
         <div>
-          <p class="cap">Biggest changes · best set vs the 4 weeks before</p>
+          <p class="note">Biggest changes · best set vs the 4 weeks before</p>
           <table class="ex"><tbody id="str-rows"></tbody></table>
         </div>
       </section>
 
-      <section class="rule tile week">
+      <section class="tile week">
         <div class="week-head">
           <h2 class="note" id="week-sum">This week</h2>
           <p class="note pair" id="pair" hidden></p>
@@ -103,39 +90,39 @@
         <ol class="wk" id="days"></ol>
       </section>
 
-      <section class="rule tile sleep">
+      <section class="tile sleep">
         <div>
           <h2 class="cap">Sleep · last night</h2>
           <p class="num" id="slept">–</p>
-          <p class="note" id="sleep-score"></p>
+          <p class="cap" id="sleep-score"></p>
           <div class="stages" id="stages" aria-hidden="true"></div>
           <ul class="stage-key" id="stage-key"></ul>
         </div>
         <div>
           <h3 class="cap">Each night this week</h3>
           <ol class="nights" id="nights"></ol>
-          <p class="note" id="sleep-line"></p>
+          <p class="cap" id="sleep-line"></p>
         </div>
       </section>
 
-      <section class="rule tile weight">
+      <section class="tile weight">
         <h2 class="cap">Weight · 7-day average</h2>
         <p class="num" id="kg">–</p>
         <svg viewBox="0 0 200 50" preserveAspectRatio="none" id="wtrend" aria-hidden="true"></svg>
-        <p class="note" id="kg-line"></p>
+        <p class="cap" id="kg-line"></p>
       </section>
 
-      <section class="rule tile take">
-        <h2 class="sk take-h">Claude's<br>take</h2>
+      <section class="tile take">
+        <h2 class="anton take-h">Claude's<br>take</h2>
         <div>
           <p id="take-text"></p>
-          <p class="note" id="take-meta"></p>
+          <p class="cap" id="take-meta"></p>
         </div>
       </section>
     </div>
 
-    <section class="rule past" id="past" hidden>
-      <h2 class="sk">Past reviews</h2>
+    <section class="past" id="past" hidden>
+      <h2 class="anton">Past reviews</h2>
       <div id="past-list"></div>
     </section>
   </main>
