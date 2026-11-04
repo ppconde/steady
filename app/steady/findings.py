@@ -17,6 +17,29 @@ def _num(x: float) -> str:
     return f"{x:g}"
 
 
+def _span(d: int) -> str:
+    return "week" if d == 7 else f"{d // 7} weeks" if d % 7 == 0 else f"{d} days"
+
+
+def _weight(w) -> str | None:
+    if w.latest is None:
+        return None  # never weighs in: say nothing
+    if w.avg is None:
+        return "Not enough weigh-ins lately to judge weight."
+    s = f"Weight averaged {_num(w.avg)} kg over the last {w.recent_days} days"
+    if w.target is None:
+        return s + ". Set a weight goal in Garmin Connect to count it as progress."
+    goal = f"your {_num(w.target)} kg target"
+    if w.status == "on_track":
+        return f"{s}, on track for {goal}."
+    if w.status in ("closer", "further"):
+        moved = _num(round(abs(w.before - w.avg), 1))
+        return f"{s}, {moved} kg {w.status} {'to' if w.status == 'closer' else 'from'} {goal} than the {_span(w.before_days)} before."
+    if w.status == "steady":
+        return f"{s}, {_num(round(abs(w.avg - w.target), 1))} kg from {goal} and holding."
+    return "Not enough weigh-ins lately to judge weight."
+
+
 def hard_pairs(r: Report) -> list[tuple[int, int]]:
     hard = [c.effort == "hard" for c in r.week]
     return [(d, d + 1) for d in range(6) if hard[d] and hard[d + 1]]
@@ -40,9 +63,10 @@ def findings(r: Report) -> list[str]:
     else:
         top = ", ".join(f"{c.exercise.split('/')[-1].replace('_', ' ').lower()} "
                         f"{_num(c.before)} → {_num(c.after)} {c.unit}" for c in st.changes[:3])
-        d = r.compare_days
-        span = "week" if d == 7 else f"{d // 7} weeks" if d % 7 == 0 else f"{d} days"
-        out.append(f"{st.up} of {st.total} exercises up vs the previous {span} ({top}).")
+        out.append(f"{st.up} of {st.total} exercises up vs the previous {_span(r.compare_days)} ({top}).")
+
+    if line := _weight(r.weight):
+        out.append(line)
 
     g = _GAUGE[r.gauge]
     if r.gauge in ("normal", "strained") and r.off_signals:

@@ -61,3 +61,30 @@ def test_strength_wording_follows_period():
 def test_missing_nights_said():
     fs = findings(base(gauge="normal", missing_nights=2))
     assert any("2 of the last 3 nights" in f for f in fs)
+
+
+def wt(**kw):
+    from steady.analysis.weight import WeightTrend
+    return WeightTrend(**{"latest": 79.6, "avg": 79.7, "before": 80.2, "target": 75.0, "status": "closer",
+                          "direction": "up", "points": [], **kw})
+
+
+def weight_line(**kw):
+    return [f for f in findings(base(weight=wt(**kw))) if "eight" in f]
+
+
+def test_weight_closer():
+    assert weight_line() == ["Weight averaged 79.7 kg over the last 7 days, 0.5 kg closer to your 75 kg target "
+                             "than the 4 weeks before."]
+
+
+def test_weight_on_track_and_no_target():
+    assert weight_line(status="on_track", avg=75.4) == ["Weight averaged 75.4 kg over the last 7 days, "
+                                                         "on track for your 75 kg target."]
+    assert weight_line(target=None, status=None, direction=None) == [
+        "Weight averaged 79.7 kg over the last 7 days. Set a weight goal in Garmin Connect to count it as progress."]
+
+
+def test_weight_silent_without_weigh_ins():
+    assert weight_line(latest=None, avg=None, before=None, status=None, direction=None) == []
+    assert weight_line(avg=None, status=None, direction=None) == ["Not enough weigh-ins lately to judge weight."]

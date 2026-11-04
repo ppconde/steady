@@ -1,3 +1,4 @@
+from types import SimpleNamespace
 from datetime import date, timedelta
 
 from steady.analysis.report import build_report, verdict, week_row
@@ -22,6 +23,13 @@ def test_verdict_rule():
     assert verdict(rt("up"), sp(None)) == "yes"
     assert verdict(rt(None), sp(None)) == "not_enough_data"
     assert verdict(rt("flat"), sp("flat")) == "mixed"
+
+
+def test_verdict_majority_with_weight():
+    up, down = SimpleNamespace(direction="up"), SimpleNamespace(direction="down")
+    assert verdict(rt("up"), sp("down"), up) == "yes"
+    assert verdict(rt("down"), sp("up"), down) == "no"
+    assert verdict(rt("up"), sp("flat"), down) == "mixed"
 
 
 MON = date(2026, 10, 26)

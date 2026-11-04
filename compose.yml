@@ -44,3 +44,4 @@ services:
       TZ: ${TZ:-Europe/Lisbon}
       ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
       GOAL: ${GOAL:-General health; improve running and strength}
+      TARGET_WEIGHT_KG: ${TARGET_WEIGHT_KG:-}  # empty: use the weight goal from Garmin Connect
