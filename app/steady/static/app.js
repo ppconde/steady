@@ -109,6 +109,7 @@ function render({ report: r, review, last_sync }, end) {
   $("pace-line").textContent = run.change == null ? (run.points.length ? "Need 4 runs for a trend" : "No comparable runs")
     : `${Math.abs(Math.round(run.change))} s/km ${run.change < 0 ? "faster" : "slower"} over the period`;
   spark($("trend"), run.points, false);
+  $("trend").classList.toggle("good", run.change != null && run.change < 0);
 
   // weight
   const wt = r.weight, kg = (x) => x.toFixed(1);
@@ -119,6 +120,7 @@ function render({ report: r, review, last_sync }, end) {
     : wt.target == null ? "Set a weight goal in Garmin Connect"
     : `${kg(Math.abs(shown - wt.target))} kg ${shown > wt.target ? "above" : "below"} ${kg(wt.target)} kg · ${S[wt.status] ?? "need more weigh-ins"}`;
   spark($("wtrend"), wt.points, true);
+  $("wtrend").classList.toggle("good", wt.status === "closer" || wt.status === "on_track");
 
   // strength
   const st = r.strength;
@@ -127,7 +129,7 @@ function render({ report: r, review, last_sync }, end) {
   $("str-rows").replaceChildren(...(st.changes.length ? st.changes.map((c) => {
     const d = c.after - c.before, cls = d > 0 ? "up" : d < 0 ? "down" : "";
     return h("tr", {}, h("td", {}, pretty(c.exercise)),
-      h("td", { class: `r ${cls}` }, `${c.before} → ${c.after} ${c.unit} ${d > 0 ? "↑" : d < 0 ? "↓" : "="}`));
+      h("td", { class: `r ${cls}` }, h("span", {}, `${c.before} → ${c.after} ${c.unit} ${d > 0 ? "↑" : d < 0 ? "↓" : "="}`)));
   }) : [h("tr", {}, h("td", {}, "Not enough exercise data yet."))]));
 
   // week row
