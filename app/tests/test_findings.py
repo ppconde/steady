@@ -56,3 +56,8 @@ def test_strength_wording_follows_period():
     assert any("previous 31 days" in f for f in fs) and not any("4 weeks" in f for f in fs)
     custom = build_report(FakeSource(), date(2026, 10, 28), start=date(2026, 10, 1), today=END)
     assert any("previous 4 weeks" in f for f in findings(dataclasses.replace(custom, strength=st)))
+
+
+def test_missing_nights_said():
+    fs = findings(base(gauge="normal", missing_nights=2))
+    assert any("2 of the last 3 nights" in f for f in fs)

@@ -40,11 +40,16 @@ def after_strength(run: Activity, others: list[Activity], window_h: float = conf
 
 def pace_at_hr(samples: list[Sample], lo: int = config.HR_LO, hi: int = config.HR_HI,
                min_s: int = config.HR_MIN_S) -> float | None:
-    """Seconds per km while HR was in [lo, hi]. Assumes ~1 s sampling (garmin-grafana's FIT records)."""
-    speeds = [s.speed for s in samples if s.hr is not None and lo <= s.hr <= hi and s.speed and s.speed > 0.5]
-    if len(speeds) < min_s:
-        return None
-    return 1000 / mean(speeds)
+    """Seconds per km while HR was in [lo, hi], time-weighted so 1 s and smart-recording (1-7 s) both work."""
+    ss = sorted(samples, key=lambda s: s.t_s)
+    secs = dist = 0.0
+    for i, s in enumerate(ss):
+        gap = ss[i + 1].t_s - s.t_s if i + 1 < len(ss) else (s.t_s - ss[i - 1].t_s if i else 1)
+        dt = min(max(gap, 0), 10)  # pauses longer than 10 s don't count
+        if s.hr is not None and lo <= s.hr <= hi and s.speed and s.speed > 0.5:
+            secs += dt
+            dist += s.speed * dt
+    return 1000 * secs / dist if secs >= min_s else None
 
 
 @dataclass(frozen=True)

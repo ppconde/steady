@@ -49,3 +49,9 @@ def test_running_trend_excludes_post_hiit():
     assert 420 not in [round(p) for _, p in t.points]
     assert t.direction == "up"
     assert t.change < 0
+
+
+def test_pace_at_hr_smart_recording():
+    # Garmin smart recording: a sample every 5 s; 80 samples = 400 s in band
+    assert pace_at_hr([Sample(5 * i, 140, 3.0) for i in range(80)]) == pytest.approx(333.3, abs=0.1)
+    assert pace_at_hr([Sample(5 * i, 140, 3.0) for i in range(40)]) is None

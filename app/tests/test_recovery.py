@@ -68,3 +68,7 @@ def test_usual_hard_pairs():
         thu = utc(2026, 10, 29, 18) - timedelta(weeks=w)
         acts += [act(thu, sport="hiit", load=150), act(thu + timedelta(days=1), sport="volleyball", load=150)]
     assert (3, 4) in usual_hard_pairs(acts, END)
+
+
+def test_no_recovery_data_is_not_fresh():
+    assert gauge(nights(last=[(None, None, None)] * 3), weeks_of_load(200), END) == "normal"

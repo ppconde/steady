@@ -1,12 +1,13 @@
 import logging
 import sys
 
-from . import config, influx, scheduler
+from . import config, influx, scheduler, store
 from .server import make_server
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s: %(message)s")
 log = logging.getLogger("modform")
 
+store.clear_running()
 if "--demo" in sys.argv:
     from .demo import demo_source
     src = demo_source()

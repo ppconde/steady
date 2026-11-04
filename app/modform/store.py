@@ -87,4 +87,15 @@ def finish_job(job_id: int, review_id: int | None) -> None:
 def get_job(job_id: int) -> dict | None:
     with _db() as c:
         r = c.execute("SELECT * FROM jobs WHERE id=?", (job_id,)).fetchone()
-    return dict(r) if r else None
+    if not r:
+        return None
+    job = dict(r)
+    if job["status"] == "running" and job["created_at"] < (datetime.now(timezone.utc) - STALE).isoformat():
+        job["status"] = "done"  # its worker died (restart); start_job sweeps the row itself
+    return job
+
+
+def clear_running() -> None:
+    """At startup no review thread can be alive, so every 'running' job is an orphan."""
+    with _db() as c:
+        c.execute("UPDATE jobs SET status='done' WHERE status='running'")

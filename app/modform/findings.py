@@ -48,6 +48,9 @@ def findings(r: Report) -> list[str]:
     if r.gauge in ("normal", "strained") and r.off_signals:
         g += f" Outside your usual range: {', '.join(r.off_signals)}."
     out.append(g)
+    if r.gauge != "building_baseline" and r.missing_nights:
+        out.append("No sleep or HRV data for the last 3 nights, so recovery can't be judged." if r.missing_nights == 3
+                   else f"No sleep or HRV data for {r.missing_nights} of the last 3 nights.")
 
     for a, b in hard_pairs(r):
         pair = f"{DAYS[a]} → {DAYS[b]}"

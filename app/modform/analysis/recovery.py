@@ -82,11 +82,13 @@ def gauge(nights: list[Night], acts: list[Activity], end: date) -> Gauge:
     b = baseline(nights, end)
     if b.hrv is None and b.rhr is None and b.sleep is None:
         return "building_baseline"
-    judged = [signals_off(n, b) for n in nights if end - timedelta(days=3) < n.day <= end]
+    recent = [n for n in nights if end - timedelta(days=3) < n.day <= end
+              and (n.hrv, n.rhr, n.sleep_s) != (None, None, None)]
+    judged = [signals_off(n, b) for n in recent]
     load, usual = week_load(acts, end), usual_week_load(acts, end)
     heavy = usual is not None and load > config.LOAD_HIGH_FACTOR * usual
     if sum(o >= 2 for o in judged) >= 2 or (heavy and any(o >= 1 for o in judged)):
         return "strained"
-    if not any(judged) and (usual is None or load <= usual):
+    if judged and not any(judged) and (usual is None or load <= usual):  # no data never reads as fresh
         return "fresh"
     return "normal"

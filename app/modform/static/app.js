@@ -184,11 +184,14 @@ $("review-form").addEventListener("submit", async (e) => {
   const { job_id } = await res.json();
   polling = true;
   status.textContent = "Writing your review…";
+  let misses = 0;
   const tick = async () => {
-    const j = await (await fetch(`/api/review/${job_id}`)).json();
+    let j;
+    try { j = await (await fetch(`/api/review/${job_id}`)).json(); }
+    catch { if (++misses < 20) return setTimeout(tick, 3000); j = { status: "done", review: null }; }
     if (j.status === "running") return setTimeout(tick, 3000);
     polling = false;
-    status.textContent = j.review ? "Done. It's under Past reviews." : "Something went wrong writing that review.";
+    status.textContent = j.review ? "Done. It's under Past reviews." : "That review was interrupted. Press Write it to try again.";
     if (j.review) await loadPast(j.review.id);
   };
   setTimeout(tick, 3000);

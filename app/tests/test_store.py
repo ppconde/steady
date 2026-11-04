@@ -31,3 +31,18 @@ def test_review_for_week_picks_last_scheduled():
     assert store.review_for_week(mon - timedelta(days=7)) is None
     assert [r["text"] for r in store.custom_reviews()] == ["c"]
     assert store.last_fingerprint() == "2"
+
+
+def test_get_job_reports_stale_as_done():
+    j = store.start_job(None, D)
+    old = (datetime.now(timezone.utc) - timedelta(minutes=15)).isoformat()
+    with sqlite3.connect(config.DB_PATH) as c:
+        c.execute("UPDATE jobs SET created_at = ?", (old,))
+    assert store.get_job(j)["status"] == "done"
+
+
+def test_startup_clears_running_jobs():
+    j = store.start_job(None, D)
+    store.clear_running()
+    assert store.get_job(j)["status"] == "done"
+    assert store.start_job(None, D) is not None
