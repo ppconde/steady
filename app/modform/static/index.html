@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Modform</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <main class="mc">
+    <header class="bar">
+      <div class="wkname">
+        <button class="arrow" id="prev" aria-label="Previous week">‹</button>
+        <h1 class="anton" id="weekno">Week</h1>
+        <button class="arrow" id="next" aria-label="Next week">›</button>
+      </div>
+      <div class="meta">
+        <span class="cap" id="dates"></span>
+        <span class="sync" id="sync"></span>
+      </div>
+      <button class="primary" id="review-btn" aria-expanded="false" aria-controls="review-panel">Review ↻</button>
+    </header>
+
+    <section class="panel" id="review-panel" hidden>
+      <form id="review-form">
+        <fieldset>
+          <legend class="note">Write a review for</legend>
+          <label><input type="radio" name="range" value="week" checked> This week</label>
+          <label><input type="radio" name="range" value="4w"> Last 4 weeks</label>
+          <label><input type="radio" name="range" value="custom"> Custom</label>
+          <span class="custom">
+            <label>From <input type="date" id="from"></label>
+            <label>to <input type="date" id="to"></label>
+          </span>
+        </fieldset>
+        <button class="primary" type="submit">Write it</button>
+        <p class="note" id="review-status" role="status" aria-live="polite"></p>
+      </form>
+    </section>
+
+    <div class="grid">
+      <section class="tile verdict">
+        <h2 class="cap">Are you improving?</h2>
+        <p class="anton big" id="verdict">…</p>
+        <p class="note" id="verdict-line"></p>
+        <span class="disc d1" aria-hidden="true"></span><span class="disc d2" aria-hidden="true"></span>
+      </section>
+
+      <section class="tile gauge">
+        <h2 class="cap">Overtraining?</h2>
+        <svg viewBox="0 0 200 110" id="gauge-svg" role="img" aria-labelledby="gauge-word">
+          <path d="M15 100 A85 85 0 0 1 72 20" fill="none" stroke="#151515" stroke-width="22"/>
+          <path d="M75 19 A85 85 0 0 1 128 19" fill="none" stroke="#F2A922" stroke-width="22"/>
+          <path d="M131 20 A85 85 0 0 1 185 100" fill="none" stroke="#E8502F" stroke-width="22"/>
+          <line id="needle" x1="100" y1="100" x2="100" y2="35" stroke="#151515" stroke-width="6" stroke-linecap="round"/>
+          <circle cx="100" cy="100" r="9" fill="#151515"/>
+        </svg>
+        <p class="anton mid" id="gauge-word">…</p>
+        <p class="cap" id="gauge-line"></p>
+      </section>
+
+      <section class="tile running">
+        <h2 class="cap">Running · pace @ 140 bpm</h2>
+        <p class="num" id="pace">–</p>
+        <svg viewBox="0 0 200 50" preserveAspectRatio="none" id="trend" aria-hidden="true"></svg>
+        <p class="cap" id="pace-line"></p>
+      </section>
+
+      <section class="tile strength">
+        <div>
+          <h2 class="cap pink">Strength · HIIT &amp; gym</h2>
+          <p class="anton big" id="str-n">–</p>
+          <p class="cap">exercises up<br>vs last 4 weeks</p>
+        </div>
+        <div>
+          <p class="note">Biggest changes · best set vs the 4 weeks before</p>
+          <table class="ex"><tbody id="str-rows"></tbody></table>
+          <p class="note small">Only compares an exercise with itself, so new or rare ones are skipped.</p>
+        </div>
+      </section>
+
+      <section class="tile week">
+        <div class="week-head">
+          <h2 class="note" id="week-sum">This week</h2>
+          <p class="note pair" id="pair" hidden></p>
+        </div>
+        <ol class="wk" id="days"></ol>
+      </section>
+
+      <section class="tile take">
+        <h2 class="anton take-h">Claude's<br>take</h2>
+        <div>
+          <p id="take-text"></p>
+          <p class="cap" id="take-meta"></p>
+        </div>
+      </section>
+    </div>
+
+    <section class="past" id="past" hidden>
+      <h2 class="anton">Past reviews</h2>
+      <div id="past-list"></div>
+    </section>
+  </main>
+  <script src="/static/app.js"></script>
+</body>
+</html>
