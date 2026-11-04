@@ -20,6 +20,16 @@
         ],
         "createdAt": "2026-11-04T19:08:08.344Z",
         "reason": "Claude: decorative circles in a throwaway brainstorm mockup are meant to be cropped by the tile edge, no popovers exist"
+      },
+      {
+        "rule": "cream-palette",
+        "value": "*",
+        "files": [
+          "app/modform/static/index.html",
+          "app/modform/static/style.css"
+        ],
+        "createdAt": "2026-11-04T19:51:27.298Z",
+        "reason": "Claude: cream #F4EEE1 is part of the owner-approved mid-century palette from the blocks-v3 mockup, not a reflex default"
       }
     ]
   }
