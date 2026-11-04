@@ -74,17 +74,8 @@ button:hover { background: var(--green); transform: rotate(-1.5deg); }
 /* grid of sketch boxes */
 .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
 .tile { padding: 22px 24px; min-height: 180px; }
-.verdict { grid-column: span 2; display: grid; grid-template-columns: 1fr minmax(200px, 270px); grid-auto-rows: min-content;
-  column-gap: 16px; }
-.verdict > :not(.doodle) { grid-column: 1; }
-.doodle { grid-column: 2; grid-row: 1 / span 3; align-self: end; width: 100%; overflow: visible; }
-.doodle .ink { fill: none; stroke: var(--ink); stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
-.doodle .band { stroke: var(--marker); stroke-width: 3.4; }
-.doodle .sweat { stroke: var(--graphite); stroke-width: 1.6; }
-.doodle .speed, .doodle .ground { stroke: var(--pencil); stroke-width: 1.8; }
-.doodle .eye { fill: var(--paper); }
-.doodle-note { font: 15px var(--hand); fill: var(--graphite); }
-.verdict-word { position: relative; justify-self: start; padding: 8px 34px 12px 30px; margin: 2px 0 6px -12px; }
+.verdict { grid-column: span 2; display: flex; flex-direction: column; }
+.verdict-word { position: relative; align-self: flex-start; padding: 8px 34px 12px 30px; margin: 2px 0 6px -12px; }
 .verdict .scribble { position: absolute; inset: 0; width: 100%; height: 100%; fill: none;
   stroke: var(--mark, var(--graphite)); stroke-width: 2.4; stroke-linecap: round; overflow: visible; }
 .verdict[data-v=yes] { --mark: var(--marker); }
@@ -161,8 +152,6 @@ button:hover { background: var(--green); transform: rotate(-1.5deg); }
   .mc { padding: 12px 16px 36px; }
   .grid { grid-template-columns: 1fr; gap: 18px; }
   .verdict, .strength, .week, .take { grid-column: auto; }
-  .verdict { grid-template-columns: 1fr; }
-  .doodle { grid-column: 1; grid-row: auto; max-width: 260px; justify-self: center; margin-top: 10px; }
   .big { font-size: 66px; }
   .wkname h1 { font-size: 38px; }
   .strength, .take { grid-template-columns: 1fr; gap: 14px; }

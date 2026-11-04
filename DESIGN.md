@@ -11,7 +11,7 @@ Steady's dashboard reads as a designer's working sketch sheet: hand-ruled ink bo
 | `--graphite` | `#55524C` | secondary text (≥4.5:1 on paper), second box stroke, hatch |
 | `--pencil` | `#A39F95` | rules, future days, inactive marks. Never text |
 | `--green` | `#116C3B` | green text: verdict yes, improving values, fresh, today; hover, focus |
-| `--marker` | `#2BA65A` (+ `--marker-soft` 38%) | highlighter: verdict swash + scribble, improving trend lines, value underlines, today box, fresh gauge zone, doodle headband |
+| `--marker` | `#2BA65A` (+ `--marker-soft` 38%) | highlighter: verdict swash + scribble, improving trend lines, value underlines, today box, fresh gauge zone |
 
 ## Type
 - **Cabin Sketch 700**: display lettering and big numbers (verdict, week, pace, kg, headings).
@@ -28,6 +28,3 @@ All self-hosted from `static/fonts` (OFL texts beside them).
 
 ## Layout
 3-column grid with 22px gaps, max-width 1000px. Below 640px it becomes one column, and day rows become horizontal rows.
-
-## Doodle
-The verdict box carries a hand-drawn joke: a stick runner chased by a kettlebell with legs ("it's gaining on you"). It is inline SVG, decorative (`aria-hidden`), ink with a green headband, and stacks under the verdict on mobile.
