@@ -43,3 +43,12 @@ def test_nights_local_date(monkeypatch):
     (n,) = influx.nights(SINCE, UNTIL)
     assert n.day == date(2026, 11, 2)
     assert n.hrv == 61 and n.rhr is None and n.sleep_s == 27000
+
+
+def test_nights_sleep_stages(monkeypatch):
+    t = 1793428200  # 2026-11-01 06:30 UTC
+    monkeypatch.setattr(influx, "query", fake({"SleepSummary": [
+        {"time": t, "sleepTimeSeconds": 27000, "deepSleepSeconds": 5400, "lightSleepSeconds": 14400,
+         "remSleepSeconds": 6000, "awakeSleepSeconds": 1200, "sleepScore": 81}]}))
+    (n,) = influx.nights(SINCE, UNTIL)
+    assert (n.deep_s, n.light_s, n.rem_s, n.awake_s, n.score) == (5400, 14400, 6000, 1200, 81)

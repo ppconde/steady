@@ -53,12 +53,26 @@ button:focus-visible, input:focus-visible { outline: 3px solid var(--mustard); o
 /* grid */
 .grid { display: grid; grid-template-columns: repeat(3, 1fr); }
 .tile { padding: 22px; position: relative; overflow: hidden; min-height: 170px; }
-.verdict { background: var(--blue); color: var(--white); grid-column: span 2; }
-.verdict .note { margin-top: 12px; position: relative; z-index: 1; max-width: 60%; }
+.verdict { background: var(--blue); color: var(--white); grid-column: span 2; display: grid;
+  grid-template-columns: 1fr minmax(0, 250px); gap: 22px; }
+.verdict .note { margin-top: 12px; position: relative; z-index: 1; }
+/* scorecard: one row per signal the verdict counts */
+.signals { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; align-content: start; position: relative; z-index: 1; }
+.sig { display: grid; grid-template-columns: 34px 1fr; column-gap: 10px; align-items: center; background: var(--white);
+  color: var(--black); padding: 8px 10px; font-size: 12px; font-weight: 600; }
+.sig b { font-family: Anton, Impact, sans-serif; font-weight: 400; font-size: 18px; text-transform: uppercase; letter-spacing: .02em; }
+.sig span { grid-column: 2; }
+.sig.up, .sig.down { color: var(--black); }
+
+.sig svg { grid-row: 1 / span 2; width: 34px; height: 34px; padding: 6px; fill: none; stroke: var(--black);
+  stroke-width: 3.2; stroke-linecap: round; stroke-linejoin: round; background: var(--cream); }
+.sig.up svg { background: var(--mustard); }
+.sig.down svg { background: var(--red); }
+.sig.none svg { stroke-dasharray: 3 4; stroke-width: 2; }
 .verdict .big { position: relative; z-index: 1; }
 .disc { position: absolute; border-radius: 50%; }
-.d1 { right: -40px; bottom: -80px; width: 220px; height: 220px; background: var(--mustard); }
-.d2 { right: 40px; bottom: -80px; width: 110px; height: 110px; background: var(--red); }
+.d1 { left: 150px; bottom: -175px; width: 220px; height: 220px; background: var(--mustard); }
+.d2 { left: 330px; bottom: -62px; width: 110px; height: 110px; background: var(--red); }
 .gauge { background: var(--pink); text-align: center; }
 .gauge svg { width: 150px; margin-top: 6px; }
 #needle { transition: all .6s ease; }
@@ -102,7 +116,31 @@ button:focus-visible, input:focus-visible { outline: 3px solid var(--mustard); o
 .day.today .d { text-decoration: underline 3px var(--red); text-underline-offset: 4px; }
 
 /* claude's take */
-.take { background: var(--cream); grid-column: span 2; display: grid; grid-template-columns: auto 1fr; gap: 22px;
+/* sleep: night blue; stage blocks from darkest (deep) to lightest (awake) */
+.sleep { background: var(--black); color: var(--white); grid-column: span 2; display: grid; grid-template-columns: 1fr 1fr; gap: 26px; }
+.sleep h3 { margin: 0; }
+.stages { display: flex; gap: 3px; height: 30px; margin-top: 14px; }
+.stages i { min-width: 5px; }
+.s-deep { background: var(--blue); }
+.s-rem { background: var(--pink); }
+.s-light { background: var(--cream); }
+.s-awake { background: var(--red); }
+.stage-key { list-style: none; padding: 0; margin: 10px 0 0; display: flex; flex-wrap: wrap; gap: 4px 16px; font-size: 12px; font-weight: 600; }
+.stage-key li { background: none; }
+.stage-key li::before { content: ""; display: inline-block; width: 11px; height: 11px; margin-right: 6px; vertical-align: -1px; }
+.stage-key .s-deep::before { background: var(--blue); }
+.stage-key .s-rem::before { background: var(--pink); }
+.stage-key .s-light::before { background: var(--cream); }
+.stage-key .s-awake::before { background: var(--red); }
+.nights { list-style: none; padding: 0; margin: 12px 0 10px; display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; }
+.nights li { display: grid; grid-template-rows: 80px auto auto; justify-items: center; row-gap: 4px; }
+.nights .nb { align-self: end; width: 70%; background: var(--cream); }
+.nights .today .nb { background: var(--mustard); }
+.nights .v { font-size: 11px; font-weight: 600; }
+.nights .d { font-family: Anton, Impact, sans-serif; font-size: 15px; text-transform: uppercase; }
+.nights .today .d { text-decoration: underline 3px var(--red); text-underline-offset: 4px; }
+
+.take { background: var(--cream); grid-column: span 3; display: grid; grid-template-columns: auto 1fr; gap: 22px;
   align-items: start; min-height: 0; }
 .take-h { font-size: 42px; color: var(--blue); }
 #take-text { font-size: 15px; line-height: 1.55; max-width: 68ch; }
@@ -118,11 +156,12 @@ button:focus-visible, input:focus-visible { outline: 3px solid var(--mustard); o
 @media (max-width: 640px) {
   .mc { border-width: 6px; }
   .grid { grid-template-columns: 1fr; }
-  .verdict, .strength, .week, .take { grid-column: auto; }
+  .verdict, .strength, .week, .take, .sleep { grid-column: auto; }
+  .verdict, .sleep { grid-template-columns: 1fr; gap: 18px; }
   .big { font-size: 60px; }
-  .d1 { width: 150px; height: 150px; right: -60px; bottom: -70px; }
-  .d2 { width: 76px; height: 76px; right: 10px; bottom: -50px; }
-  .verdict .note { max-width: 58%; }
+  .d1 { width: 120px; height: 120px; left: auto; right: -50px; bottom: auto; top: -50px; }
+  .d2 { width: 60px; height: 60px; left: auto; right: 34px; bottom: auto; top: -34px; }
+  .v-main { position: relative; }
   .strength, .take { grid-template-columns: 1fr; gap: 14px; }
   .wk { grid-template-columns: 1fr; }
   .day { display: grid; grid-template-columns: 52px 1fr 90px; align-items: center; gap: 4px 10px; }

@@ -40,6 +40,24 @@ def _weight(w) -> str | None:
     return "Not enough weigh-ins lately to judge weight."
 
 
+def hm(s: float) -> str:
+    m = round(s / 60)
+    return f"{m // 60}h {m % 60:02d}m"
+
+
+def _sleep(s) -> str | None:
+    if s.avg_s is None:
+        return None
+    line = f"Sleep averaged {hm(s.avg_s)} over the last {s.recent_days} nights"
+    if s.before_s is not None:
+        d = round((s.avg_s - s.before_s) / 60)
+        line += (f", about the same as the {_span(s.before_days)} before" if abs(d) < 10
+                 else f", {abs(d)} min {'more' if d > 0 else 'less'} than the {_span(s.before_days)} before")
+    if s.avg_score is not None:
+        line += f"; sleep score {round(s.avg_score)}"
+    return line + "."
+
+
 def hard_pairs(r: Report) -> list[tuple[int, int]]:
     hard = [c.effort == "hard" for c in r.week]
     return [(d, d + 1) for d in range(6) if hard[d] and hard[d + 1]]
@@ -66,6 +84,9 @@ def findings(r: Report) -> list[str]:
         out.append(f"{st.up} of {st.total} exercises up vs the previous {_span(r.compare_days)} ({top}).")
 
     if line := _weight(r.weight):
+        out.append(line)
+
+    if line := _sleep(r.sleep):
         out.append(line)
 
     g = _GAUGE[r.gauge]

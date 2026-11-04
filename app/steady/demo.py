@@ -58,7 +58,9 @@ def demo_source(today=None) -> FakeSource:
     for i in range(71):
         d = first + timedelta(days=i)
         wk, dow, k = i // 7, d.weekday(), f"{d.isoformat()}"
-        src.night_list.append(Night(d, 60 + (3 if i % 2 else -3), 48 + (i % 3 == 0), 27000 + 600 * (i % 4 - 2)))
+        slept = 26400 + 600 * (i % 4 - 2) + 15 * i  # creeping up a little
+        src.night_list.append(Night(d, 60 + (3 if i % 2 else -3), 48 + (i % 3 == 0), slept,
+                                    0.19 * slept, 0.55 * slept, 0.22 * slept, 1200 + 300 * (i % 3), 72 + i % 9 + i // 10))
         if i % 3 == 0:  # a weigh-in every third morning, drifting toward the goal
             src.weights.append(WeighIn(at(d, 7), round(80.6 - 0.04 * i + (0.3 if i % 2 else -0.2), 1)))
         if dow in (0, 3):

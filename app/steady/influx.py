@@ -63,10 +63,13 @@ def exercise_sets(since: datetime, until: datetime) -> list[ExerciseSet]:
 
 def nights(since: datetime, until: datetime) -> list[Night]:
     out = {}
-    q = f'SELECT "avgOvernightHrv","restingHeartRate","sleepTimeSeconds" FROM "SleepSummary" WHERE {_range(since, until)}'
+    q = ('SELECT "avgOvernightHrv","restingHeartRate","sleepTimeSeconds","deepSleepSeconds","lightSleepSeconds",'
+         f'"remSleepSeconds","awakeSleepSeconds","sleepScore" FROM "SleepSummary" WHERE {_range(since, until)}')
     for r in query(q):
         day = _t(r["time"]).astimezone(config.TZ).date()
-        out[day] = Night(day, r.get("avgOvernightHrv"), r.get("restingHeartRate"), r.get("sleepTimeSeconds"))
+        out[day] = Night(day, r.get("avgOvernightHrv"), r.get("restingHeartRate"), r.get("sleepTimeSeconds"),
+                         r.get("deepSleepSeconds"), r.get("lightSleepSeconds"), r.get("remSleepSeconds"),
+                         r.get("awakeSleepSeconds"), r.get("sleepScore"))
     return sorted(out.values(), key=lambda n: n.day)
 
 

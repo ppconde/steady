@@ -39,6 +39,11 @@ class Night:
     hrv: float | None
     rhr: float | None
     sleep_s: float | None
+    deep_s: float | None = None
+    light_s: float | None = None
+    rem_s: float | None = None
+    awake_s: float | None = None
+    score: float | None = None
 
 
 @dataclass(frozen=True)

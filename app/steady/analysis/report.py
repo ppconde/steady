@@ -8,6 +8,7 @@ from typing import Literal, Protocol
 from .. import config
 from ..models import Activity, ExerciseSet, Night, Sample, WeighIn
 from .recovery import Gauge, baseline, gauge, off_names, usual_hard_pairs, usual_week_load, week_load
+from .sleep import SleepSummary, sleep_summary
 from .running import RunningTrend, effort, is_run, is_strength, running_trend
 from .strength import StrengthProgress, strength_progress
 from .weight import WeightTrend, weight_trend
@@ -52,6 +53,7 @@ class DayCell:
     sessions: list[Session]
     effort: str | None  # hardest session, "rest", or None for days still to come
     future: bool
+    sleep_s: float | None = None  # sleep in the night that ended this morning
 
 
 def _label(a: Activity) -> str:
@@ -72,7 +74,8 @@ def _local_day(a: Activity) -> date:
     return a.start.astimezone(config.TZ).date()
 
 
-def week_row(acts: list[Activity], week_start: date, today: date) -> list[DayCell]:
+def week_row(acts: list[Activity], week_start: date, today: date, nights: list[Night] = ()) -> list[DayCell]:
+    slept = {n.day: n.sleep_s for n in nights}
     cells = []
     for i in range(7):
         day = week_start + timedelta(days=i)
@@ -80,7 +83,7 @@ def week_row(acts: list[Activity], week_start: date, today: date) -> list[DayCel
         todays = [] if future else sorted((a for a in acts if _local_day(a) == day), key=lambda a: a.start)
         sessions = [Session(a.sport, _label(a), effort(a)) for a in todays]
         hardest = max((s.effort for s in sessions), key=_RANK.get, default="rest")
-        cells.append(DayCell(day, sessions, None if future else hardest, future))
+        cells.append(DayCell(day, sessions, None if future else hardest, future, slept.get(day)))
     return cells
 
 
@@ -93,6 +96,7 @@ class Report:
     running: RunningTrend
     strength: StrengthProgress
     weight: WeightTrend
+    sleep: SleepSummary
     week: list[DayCell]
     usual_pairs: set
     week_load: float
@@ -128,8 +132,8 @@ def build_report(src: DataSource, end: date, start: date | None = None, today: d
     judged = [n for n in nights if end - timedelta(days=3) < n.day <= end
               and (n.hrv, n.rhr, n.sleep_s) != (None, None, None)]
     return Report(start=start, end=end, verdict=verdict(running, strength, weight), gauge=gauge(nights, acts, end),
-                  running=running, strength=strength, weight=weight,
-                  week=week_row(acts, end - timedelta(days=end.weekday()), today),
+                  running=running, strength=strength, weight=weight, sleep=sleep_summary(nights, end),
+                  week=week_row(acts, end - timedelta(days=end.weekday()), today, nights),
                   usual_pairs=usual_hard_pairs(acts, end), week_load=week_load(acts, end),
                   usual_load=usual_week_load(acts, end), latest=nights[-1] if nights else None,
                   missing_nights=3 - len(judged),

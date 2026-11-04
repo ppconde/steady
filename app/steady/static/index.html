@@ -41,10 +41,13 @@
 
     <div class="grid">
       <section class="tile verdict">
-        <h2 class="cap">Are you improving?</h2>
-        <p class="anton big" id="verdict">…</p>
-        <p class="note" id="verdict-line"></p>
-        <span class="disc d1" aria-hidden="true"></span><span class="disc d2" aria-hidden="true"></span>
+        <div class="v-main">
+          <h2 class="cap">Are you improving?</h2>
+          <p class="anton big" id="verdict">…</p>
+          <p class="note" id="verdict-line"></p>
+          <span class="disc d1" aria-hidden="true"></span><span class="disc d2" aria-hidden="true"></span>
+        </div>
+        <ul class="signals" id="signals" aria-label="What the verdict counts"></ul>
       </section>
 
       <section class="tile gauge">
@@ -76,7 +79,6 @@
         <div>
           <p class="note">Biggest changes · best set vs the 4 weeks before</p>
           <table class="ex"><tbody id="str-rows"></tbody></table>
-          <p class="note small">Only compares an exercise with itself, so new or rare ones are skipped.</p>
         </div>
       </section>
 
@@ -86,6 +88,21 @@
           <p class="note pair" id="pair" hidden></p>
         </div>
         <ol class="wk" id="days"></ol>
+      </section>
+
+      <section class="tile sleep">
+        <div>
+          <h2 class="cap">Sleep · last night</h2>
+          <p class="num" id="slept">–</p>
+          <p class="cap" id="sleep-score"></p>
+          <div class="stages" id="stages" aria-hidden="true"></div>
+          <ul class="stage-key" id="stage-key"></ul>
+        </div>
+        <div>
+          <h3 class="cap">Each night this week</h3>
+          <ol class="nights" id="nights"></ol>
+          <p class="cap" id="sleep-line"></p>
+        </div>
       </section>
 
       <section class="tile weight">
