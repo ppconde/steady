@@ -111,25 +111,6 @@ button:hover { background: var(--green); transform: rotate(-1.5deg); }
 /* green text in Gochi Hand: upright marker lettering that matches the highlighter */
 .sig b, .up, .ex td.r.up span, .day.today .d, .nights .today .d { font-family: "Gochi Hand", var(--hand); font-weight: 400; }
 
-/* mascot: the tortoise's pose follows the gauge */
-.sig b { font-size: 23px; }
-.sig span { font-family: var(--hand); }
-.gauge svg.mascot { width: 190px; margin: 12px auto 0; }
-.mascot path { fill: none; stroke: var(--ink); stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; filter: url(#rough-b); }
-.mascot .m-shell { fill: url(#mh); stroke-width: 2.6; }
-.mascot .m-head path:nth-child(2), .mascot .m-legs path { fill: var(--paper); }
-.mascot .m-eye { fill: var(--ink); }
-.mascot .m-ground { stroke: var(--pencil); stroke-width: 1.5; }
-.mascot .m-speed path, .mascot .m-zzz path { stroke: var(--graphite); stroke-width: 1.8; }
-.mascot .m-band { stroke: var(--marker); stroke-width: 4; display: none; }
-.mascot .m-speed, .mascot .m-zzz { display: none; }
-.gauge[data-g=fresh] .m-band, .gauge[data-g=fresh] .m-speed { display: inline; }
-.gauge[data-g=fresh] .m-back { transform: rotate(28deg); transform-origin: 52px 72px; }
-.gauge[data-g=fresh] .m-front { transform: rotate(-30deg); transform-origin: 110px 72px; }
-.gauge[data-g=fresh] .m-body { transform: rotate(-4deg); transform-origin: 80px 80px; }
-.gauge[data-g=strained] .m-head, .gauge[data-g=strained] .m-legs, .gauge[data-g=strained] .m-tail { display: none; }
-.gauge[data-g=strained] .m-body { transform: translateY(9px); }
-.gauge[data-g=strained] .m-zzz { display: inline; }
 
 .running svg, .weight svg { width: 100%; height: 56px; margin: 14px 0 8px; display: block; overflow: visible;
   color: var(--ink); filter: url(#rough-b); }
