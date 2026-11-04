@@ -74,8 +74,21 @@ button:hover { background: var(--green); transform: rotate(-1.5deg); }
 /* grid of sketch boxes */
 .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
 .tile { padding: 22px 24px; min-height: 180px; }
-.verdict { grid-column: span 2; display: flex; flex-direction: column; }
-.verdict-word { position: relative; align-self: flex-start; padding: 8px 34px 12px 30px; margin: 2px 0 6px -12px; }
+.verdict { grid-column: span 2; display: grid; grid-template-columns: auto 1fr; grid-auto-rows: min-content; column-gap: 28px; }
+.verdict > :not(.signals) { grid-column: 1; }
+/* scorecard: a pen mark per signal the verdict counts */
+.signals { grid-column: 2; grid-row: 1 / span 3; align-self: center; list-style: none; margin: 8px 0 0; padding: 4px 0 0 24px;
+  border-left: 1.5px dashed var(--pencil); display: grid; gap: 14px; }
+.sig { display: grid; grid-template-columns: 30px 1fr; column-gap: 10px; align-items: center; font: 15px/1.3 var(--hand); color: var(--graphite); }
+.sig b { font: 700 19px var(--hand); color: var(--ink); }
+.sig span { grid-column: 2; }
+.sig svg { grid-row: 1 / span 2; width: 30px; height: 30px; fill: none; stroke: var(--ink); stroke-width: 2.8;
+  stroke-linecap: round; stroke-linejoin: round; filter: url(#rough-b); overflow: visible; }
+.sig.up svg { stroke: var(--marker); stroke-width: 3.6; }
+.sig.up b { color: var(--green); }
+.sig.flat svg { stroke: var(--graphite); }
+.sig.none svg { stroke: var(--pencil); stroke-dasharray: 3 4; stroke-width: 2; }
+.verdict-word { position: relative; justify-self: start; padding: 8px 34px 12px 30px; margin: 2px 0 6px -12px; }
 .verdict .scribble { position: absolute; inset: 0; width: 100%; height: 100%; fill: none;
   stroke: var(--mark, var(--graphite)); stroke-width: 2.4; stroke-linecap: round; overflow: visible; }
 .verdict[data-v=yes] { --mark: var(--marker); }
@@ -134,8 +147,39 @@ button:hover { background: var(--green); transform: rotate(-1.5deg); }
 .day.today .d { color: var(--green); text-decoration: underline wavy var(--marker) 2.5px; text-underline-offset: 5px; }
 .day.today .blk::before { border: 2.5px solid var(--marker); }
 
+/* sleep: stages as hatching density, deepest = densest */
+.sleep { grid-column: span 2; display: grid; grid-template-columns: 1fr 1fr; gap: 28px; }
+.sleep h3 { margin: 0; }
+.stages { display: flex; gap: 3px; height: 28px; margin-top: 14px; }
+.stages i { position: relative; min-width: 5px; }
+.stages i::before, .nights .nb::before { content: ""; position: absolute; inset: 0; border: 1.5px solid var(--ink); filter: url(#rough-b); }
+.s-deep { background: var(--cross); }
+.s-rem { background: var(--hatch); }
+.s-light { background: var(--dots); }
+.s-awake { background: transparent; }
+.stages .s-awake::before { border-style: dashed; border-color: var(--graphite); }
+.stage-key { list-style: none; padding: 0; margin: 10px 0 0; display: flex; flex-wrap: wrap; gap: 4px 16px;
+  font: 14px var(--hand); color: var(--graphite); }
+.stage-key li { background: none; }
+.stage-key li::before { content: ""; display: inline-block; width: 12px; height: 12px; margin-right: 6px; vertical-align: -1px;
+  border: 1.3px solid var(--ink); background: inherit; }
+.stage-key .s-deep::before { background: var(--cross); }
+.stage-key .s-rem::before { background: var(--hatch); }
+.stage-key .s-light::before { background: var(--dots); }
+.stage-key .s-awake::before { border-style: dashed; }
+.nights { list-style: none; padding: 0; margin: 12px 0 10px; display: grid; grid-template-columns: repeat(7, 1fr);
+  gap: 6px; }
+.nights li { display: grid; grid-template-rows: 80px auto auto; justify-items: center; row-gap: 4px; }
+.nights .nb { align-self: end; }
+.nights .nb.empty::before { display: none; }
+.nights .nb { position: relative; width: 70%; background: var(--hatch); }
+.nights .today .nb { background: repeating-linear-gradient(-45deg, var(--marker) 0 2.2px, transparent 2.2px 6px); }
+.nights .today .d { color: var(--green); }
+.nights .v { font: 12px var(--hand); color: var(--graphite); }
+.nights .d { font: 700 14px var(--hand); }
+
 /* Claude's take */
-.take { grid-column: span 2; display: grid; grid-template-columns: auto 1fr; gap: 24px; align-items: start; min-height: 0; }
+.take { grid-column: span 3; display: grid; grid-template-columns: auto 1fr; gap: 24px; align-items: start; min-height: 0; }
 .take-h { font-size: 48px; }
 #take-text { font: 18px/1.5 var(--hand); max-width: 66ch; }
 #take-meta { margin-top: 10px; font-size: 14px; }
@@ -151,7 +195,10 @@ button:hover { background: var(--green); transform: rotate(-1.5deg); }
 @media (max-width: 640px) {
   .mc { padding: 12px 16px 36px; }
   .grid { grid-template-columns: 1fr; gap: 18px; }
-  .verdict, .strength, .week, .take { grid-column: auto; }
+  .verdict, .strength, .week, .take, .sleep { grid-column: auto; }
+  .verdict { grid-template-columns: 1fr; }
+  .signals { grid-column: 1; grid-row: auto; border-left: 0; border-top: 1.5px dashed var(--pencil); padding: 14px 0 0; margin-top: 16px; }
+  .sleep { grid-template-columns: 1fr; gap: 18px; }
   .big { font-size: 66px; }
   .wkname h1 { font-size: 38px; }
   .strength, .take { grid-template-columns: 1fr; gap: 14px; }

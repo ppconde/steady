@@ -28,3 +28,9 @@ All self-hosted from `static/fonts` (OFL texts beside them).
 
 ## Layout
 3-column grid with 22px gaps, max-width 1000px. Below 640px it becomes one column, and day rows become horizontal rows.
+
+## Sleep box
+Last night as a stage bar where the hatching gets denser the deeper the sleep (deep = crosshatch, REM = hatch, light = dots, awake = dashed outline). Each night this week is a hatched bar on an 80px scale (10 h = full), with today in highlighter green.
+
+## Verdict scorecard
+The signals the verdict counts (running, strength, weight), each with a pen mark: a green tick for improving, a cross for slipping, a squiggle for holding, a dashed circle for no call yet.

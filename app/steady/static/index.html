@@ -51,6 +51,7 @@
           <svg class="scribble" viewBox="0 0 300 120" preserveAspectRatio="none" aria-hidden="true"><path d="M40 70 C30 26 250 10 284 52 C306 92 120 118 44 92 C6 78 18 40 96 26 C150 16 214 18 250 30"/></svg>
         </div>
         <p class="note annot" id="verdict-line"></p>
+        <ul class="signals" id="signals" aria-label="What the verdict counts"></ul>
       </section>
 
       <section class="rule tile gauge">
@@ -91,7 +92,6 @@
         <div>
           <p class="cap">Biggest changes · best set vs the 4 weeks before</p>
           <table class="ex"><tbody id="str-rows"></tbody></table>
-          <p class="note small">Only compares an exercise with itself, so new or rare ones are skipped.</p>
         </div>
       </section>
 
@@ -101,6 +101,21 @@
           <p class="note pair" id="pair" hidden></p>
         </div>
         <ol class="wk" id="days"></ol>
+      </section>
+
+      <section class="rule tile sleep">
+        <div>
+          <h2 class="cap">Sleep · last night</h2>
+          <p class="num" id="slept">–</p>
+          <p class="note" id="sleep-score"></p>
+          <div class="stages" id="stages" aria-hidden="true"></div>
+          <ul class="stage-key" id="stage-key"></ul>
+        </div>
+        <div>
+          <h3 class="cap">Each night this week</h3>
+          <ol class="nights" id="nights"></ol>
+          <p class="note" id="sleep-line"></p>
+        </div>
       </section>
 
       <section class="rule tile weight">

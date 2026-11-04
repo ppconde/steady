@@ -77,11 +77,22 @@ function render({ report: r, review, last_sync }, end) {
   $("verdict").textContent = V[r.verdict];
   document.querySelector(".verdict").dataset.v = r.verdict;
   const word = { up: "improving", down: "slipping", flat: "holding steady" };
-  const parts = [];
-  parts.push(r.running.direction ? `Running ${word[r.running.direction]}` : "Not enough runs to compare");
-  parts.push(r.strength.direction ? `strength ${word[r.strength.direction]}` : "not enough exercise data");
-  if (r.weight.direction) parts.push(r.weight.status === "on_track" ? "weight on target" : `weight ${word[r.weight.direction]}`);
-  $("verdict-line").textContent = parts.join(" · ") + " vs the period before";
+  $("verdict-line").textContent = "Each signal compared with the period before";
+  const MARK = { up: "M3 13 L9 19 L21 5", down: "M5 5 L19 19 M19 5 L5 19", flat: "M2 12 C6 7 9 17 13 12 C16 8 19 13 22 11" };
+  const W = r.weight;
+  const sig = [
+    ["Running", r.running.direction, r.running.change == null ? "not enough runs"
+      : `${Math.abs(Math.round(r.running.change))} s/km ${r.running.change < 0 ? "faster" : "slower"}`],
+    ["Strength", r.strength.direction, r.strength.total ? `${r.strength.up} of ${r.strength.total} exercises up` : "not enough data"],
+    ["Weight", W.direction, W.status == null ? (W.target == null && W.avg != null ? "no Garmin goal set" : "not enough weigh-ins")
+      : W.status === "on_track" ? "on target" : `${Math.abs(W.avg - W.target).toFixed(1)} kg from target`],
+  ];
+  const svg = (d) => { const s = document.createElementNS("http://www.w3.org/2000/svg", "svg"); s.setAttribute("viewBox", "0 0 24 24");
+    s.setAttribute("aria-hidden", "true"); const p = document.createElementNS("http://www.w3.org/2000/svg", "path");
+    p.setAttribute("d", d); s.append(p); return s; };
+  $("signals").replaceChildren(...sig.map(([name, dir, note]) => h("li", { class: `sig ${dir || "none"}` },
+    dir ? svg(MARK[dir]) : svg("M12 3 A9 9 0 1 1 11.9 3"), h("b", {}, name),
+    h("span", {}, ` ${dir ? word[dir] : "no call yet"} · ${note}`))));
 
   // gauge
   const G = { fresh: ["No · fresh", 150], normal: ["No · normal", 90], strained: ["Strained", 30], building_baseline: ["Building baseline", null] };
@@ -121,6 +132,28 @@ function render({ report: r, review, last_sync }, end) {
     : `${kg(Math.abs(shown - wt.target))} kg ${shown > wt.target ? "above" : "below"} ${kg(wt.target)} kg · ${S[wt.status] ?? "need more weigh-ins"}`;
   spark($("wtrend"), wt.points, true);
   $("wtrend").classList.toggle("good", wt.status === "closer" || wt.status === "on_track");
+
+  // sleep
+  const hm = (s) => { const m = Math.round(s / 60); return `${Math.floor(m / 60)}h ${String(m % 60).padStart(2, "0")}m`; };
+  const sl = r.sleep, last = sl.last;
+  $("slept").textContent = last ? hm(last.sleep_s) : "–";
+  $("sleep-score").textContent = last ? [last.score != null ? `Sleep score ${Math.round(last.score)}` : null,
+    `night ending ${short(parse(last.day))}`].filter(Boolean).join(" · ") : "No sleep data yet";
+  const stages = last ? [["deep", "Deep", last.deep_s], ["rem", "REM", last.rem_s], ["light", "Light", last.light_s],
+    ["awake", "Awake", last.awake_s]].filter((x) => x[2]) : [];
+  $("stages").replaceChildren(...stages.map(([k, , v]) => h("i", { class: `s-${k}`, style: `flex-grow:${v}` })));
+  $("stage-key").replaceChildren(...stages.map(([k, n, v]) => h("li", { class: `s-${k}` }, `${n} ${hm(v)}`)));
+  const tday = iso(today());
+  $("nights").replaceChildren(...r.week.map((c, i) => h("li", { class: c.day === tday ? "today" : "" },
+    h("span", { class: c.sleep_s ? "nb" : "nb empty", style: `height:${Math.round(Math.min(1, (c.sleep_s || 0) / 36000) * 80)}px` }),
+    h("span", { class: "v" }, c.sleep_s ? hm(c.sleep_s).replace("h ", ":").replace("m", "") : "–"),
+    h("span", { class: "d" }, DAYS[i]))));
+  let line = sl.avg_s == null ? "Need 3 nights for an average" : `${sl.recent_days}-night average ${hm(sl.avg_s)}`;
+  if (sl.avg_s != null && sl.before_s != null) {
+    const d = Math.round((sl.avg_s - sl.before_s) / 60);
+    line += Math.abs(d) < 10 ? " · about the same as the 4 weeks before" : ` · ${Math.abs(d)} min ${d > 0 ? "more" : "less"} than the 4 weeks before`;
+  }
+  $("sleep-line").textContent = line;
 
   // strength
   const st = r.strength;
