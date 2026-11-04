@@ -30,15 +30,19 @@ def baseline(nights: list[Night], end: date, days: int = config.BASELINE_DAYS) -
                     _band([n.sleep_s for n in ns if n.sleep_s is not None]))
 
 
-def signals_off(n: Night, b: Baseline) -> int:
-    off = 0
+def off_names(n: Night, b: Baseline) -> list[str]:
+    off = []
     if n.hrv is not None and b.hrv and n.hrv < b.hrv[0] - b.hrv[1]:
-        off += 1
+        off.append("HRV")
     if n.rhr is not None and b.rhr and n.rhr > b.rhr[0] + b.rhr[1]:
-        off += 1
+        off.append("resting HR")
     if n.sleep_s is not None and b.sleep and n.sleep_s < b.sleep[0] - b.sleep[1]:
-        off += 1
+        off.append("sleep")
     return off
+
+
+def signals_off(n: Night, b: Baseline) -> int:
+    return len(off_names(n, b))
 
 
 def _day(a: Activity) -> date:

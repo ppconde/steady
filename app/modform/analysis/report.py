@@ -7,7 +7,7 @@ from typing import Literal, Protocol
 
 from .. import config
 from ..models import Activity, ExerciseSet, Night, Sample
-from .recovery import Gauge, gauge, usual_hard_pairs, usual_week_load, week_load
+from .recovery import Gauge, baseline, gauge, off_names, usual_hard_pairs, usual_week_load, week_load
 from .running import RunningTrend, effort, is_run, is_strength, running_trend
 from .strength import StrengthProgress, strength_progress
 
@@ -94,6 +94,7 @@ class Report:
     usual_load: float | None
     latest: Night | None
     missing_nights: int  # of the 3 judged nights, how many had no recovery data
+    off_signals: list[str]  # signals outside the usual band on any judged night
 
 
 def _utc(d: date) -> datetime:
@@ -122,7 +123,8 @@ def build_report(src: DataSource, end: date, start: date | None = None, today: d
                   week=week_row(acts, end - timedelta(days=end.weekday()), today),
                   usual_pairs=usual_hard_pairs(acts, end), week_load=week_load(acts, end),
                   usual_load=usual_week_load(acts, end), latest=nights[-1] if nights else None,
-                  missing_nights=3 - len(judged))
+                  missing_nights=3 - len(judged),
+                  off_signals=sorted({x for n in judged for x in off_names(n, baseline(nights, end))}))
 
 
 def _plain(o):
