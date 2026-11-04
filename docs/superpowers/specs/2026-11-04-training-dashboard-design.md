@@ -16,14 +16,14 @@ The owner's goal is general health. They train with a Garmin Forerunner 965 and 
 running and volleyball, with 1–2 rest days a week. Their days are already decided, so the dashboard is
 a **review of what happened**, not a planner or a daily "train hard today" coach.
 
-Everything runs on the Pi. Nothing leaves it except the Garmin Connect sync. It costs nothing to run.
+Everything runs on the Pi. Only the Garmin Connect sync and the review request to the Claude API leave it.
 
 ## Who and how it's used
 
 - One person, the owner. Opened in a browser on the home network, on laptop or phone.
 - Read once or twice a day, after the morning and evening reviews have been written.
 - Sometimes the owner asks for a review of a different period (last month, custom dates) and is happy
-  to wait 1–2 minutes for it.
+  to wait a few seconds for it.
 
 ## Goals
 
@@ -99,7 +99,7 @@ the strength tile falls back to "not enough data" (see Edge cases).
 
 ## What the analysis computes (decided)
 
-All in Python, from InfluxDB. The language model sees none of the raw data.
+All in Python, from InfluxDB. Claude sees only the computed findings and period summary, never raw samples.
 
 ### Improving — running
 - Metric: **pace at a fixed heart rate** (default 140 bpm; band e.g. 135–145 bpm), per run, trended
